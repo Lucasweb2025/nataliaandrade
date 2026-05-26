@@ -162,7 +162,7 @@ export default function Agenda() {
           <Link to="/" className="text-[10px] sm:text-[11px] font-semibold text-warm-gray uppercase tracking-[0.15em] hover:text-rose-gold transition-colors duration-300">
             Inicio
           </Link>
-          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-12 sm:h-16 w-auto object-contain" />
+          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-12 sm:h-16 w-auto object-contain mix-blend-multiply" />
           <span className="w-12 shrink-0" />
         </div>
       </header>

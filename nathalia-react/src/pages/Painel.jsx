@@ -57,7 +57,7 @@ export default function Painel() {
       <aside className="hidden lg:flex w-72 bg-white border-r border-gold/10 flex-col justify-between p-8 shrink-0">
         <div>
           <div className="mb-10">
-            <img src={LOGO_URL} alt="Nathalia Andrade" className="w-full max-w-[180px] h-auto" />
+            <img src={LOGO_URL} alt="Nathalia Andrade" className="w-full max-w-[180px] h-auto mix-blend-multiply" />
           </div>
           <nav className="space-y-1.5">
             <Link
@@ -89,7 +89,7 @@ export default function Painel() {
           <Link to="/agenda" className="shrink-0 btn-luxury px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider">
             Agendar
           </Link>
-          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain" />
+          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain mix-blend-multiply" />
           <span className="w-[72px] shrink-0" />
         </div>
         <nav className="flex gap-2 px-5 pb-3 overflow-x-auto">
