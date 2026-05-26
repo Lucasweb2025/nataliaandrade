@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  --color-marble: #fdfcfb;
+  --color-marble-warm: #f9f6f3;
+  --color-rose-gold: #c9a087;
+  --color-rose-gold-light: #f5ebe6;
+  --color-rose-gold-dark: #a8805e;
+  --color-gold: #d4a574;
+  --color-gold-light: #e8cdb0;
+  --color-charcoal: #0d0d0d;
+  --color-charcoal-soft: #1a1a1a;
+  --color-warm-gray: #8a7e76;
+  --color-warm-gray-light: #b8ada5;
+
+  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-marble);
+  color: #1a1a1a;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.marble-bg {
+  background-color: var(--color-marble);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(201, 160, 135, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(212, 165, 116, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(201, 160, 135, 0.03) 0%, transparent 40%);
+}
+
+.marble-dark {
+  background-color: var(--color-charcoal);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(201, 160, 135, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(212, 165, 116, 0.04) 0%, transparent 40%);
+}
+
+.gold-separator {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-light), transparent);
+}
+
+.btn-luxury {
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  color: white;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-luxury:hover {
+  box-shadow: 0 8px 30px rgba(201, 160, 135, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-outline-gold {
+  border: 1.5px solid var(--color-gold-light);
+  color: var(--color-rose-gold-dark);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  border-color: var(--color-rose-gold);
+  background-color: rgba(201, 160, 135, 0.06);
+}
+
+.card-luxury {
+  background: white;
+  border: 1px solid rgba(212, 165, 116, 0.15);
+  border-top: 2px solid var(--color-gold);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-luxury:hover {
+  box-shadow: 0 12px 40px rgba(201, 160, 135, 0.15);
+  transform: translateY(-3px);
+}
+
+.slot-booked {
+  background: #10b981;
+  color: #fff;
+  border-color: #059669;
+  cursor: not-allowed;
+}
+
+.slot-available:hover {
+  border-color: var(--color-rose-gold);
+  background: var(--color-rose-gold-light);
+}
+
+.slot-selected {
+  background: var(--color-charcoal);
+  color: #fff;
+  border-color: var(--color-charcoal);
+}
+
+.day-selected {
+  background: linear-gradient(135deg, var(--color-rose-gold), var(--color-gold));
+  color: white;
+}
+
+.day-has-bookings::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.safe-bottom {
+  padding-bottom: max(6rem, env(safe-area-inset-bottom));
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-warm-gray-light);
+  border-radius: 3px;
+}

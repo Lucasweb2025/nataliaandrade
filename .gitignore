@@ -2,3 +2,6 @@
 Thumbs.db
 *.log
 .cursor/
+node_modules/
+nathalia-react/node_modules/
+nathalia-react/dist/
