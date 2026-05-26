@@ -69,14 +69,16 @@ export default function Home() {
 
       {/* Hero */}
       <section className="marble-bg relative overflow-hidden">
-        {/* Logo as background watermark */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img
-            src={LOGO_URL}
-            alt=""
-            className="w-[500px] sm:w-[600px] md:w-[700px] lg:w-[800px] h-auto opacity-[0.04]"
-          />
-        </div>
+        {/* Logo filling entire background */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.05]"
+          style={{
+            backgroundImage: `url(${LOGO_URL})`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+          }}
+        />
         <div className="absolute top-20 right-0 w-80 h-80 bg-rose-gold/5 rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-10 w-60 h-60 bg-gold/5 rounded-full blur-[80px]" />
 
