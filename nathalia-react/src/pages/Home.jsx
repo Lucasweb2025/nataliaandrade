@@ -69,6 +69,14 @@ export default function Home() {
 
       {/* Hero */}
       <section className="marble-bg relative overflow-hidden">
+        {/* Logo as background watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img
+            src={LOGO_URL}
+            alt=""
+            className="w-[500px] sm:w-[600px] md:w-[700px] lg:w-[800px] h-auto opacity-[0.04]"
+          />
+        </div>
         <div className="absolute top-20 right-0 w-80 h-80 bg-rose-gold/5 rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-10 w-60 h-60 bg-gold/5 rounded-full blur-[80px]" />
 
@@ -76,7 +84,7 @@ export default function Home() {
           <motion.img
             src={LOGO_URL}
             alt="Nathalia Andrade - Salao de Beleza"
-            className="w-52 sm:w-64 md:w-72 h-auto mb-10 drop-shadow-sm"
+            className="w-72 sm:w-80 md:w-96 h-auto mb-10 drop-shadow-sm"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}

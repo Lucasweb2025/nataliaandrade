@@ -12,7 +12,7 @@ export default function Navbar() {
           <img
             src={LOGO_URL}
             alt="Nathalia Andrade"
-            className="h-10 sm:h-12 w-auto object-contain"
+            className="h-14 sm:h-16 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'block' }}
           />
           <span className="hidden font-serif text-sm tracking-[0.2em] uppercase text-charcoal" style={{ display: 'none' }}>
