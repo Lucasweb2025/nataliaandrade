@@ -7,12 +7,12 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white/80 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between gap-6">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-5 flex items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-3 min-w-0">
           <img
             src={LOGO_URL}
             alt="Nathalia Andrade"
-            className="h-14 sm:h-16 w-auto object-contain"
+            className="h-20 sm:h-24 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'block' }}
           />
           <span className="hidden font-serif text-sm tracking-[0.2em] uppercase text-charcoal" style={{ display: 'none' }}>
