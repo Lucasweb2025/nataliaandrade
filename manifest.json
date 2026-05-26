@@ -1,0 +1,24 @@
+{
+  "name": "Nathalia Andrade - Salao de Beleza",
+  "short_name": "NA Salao",
+  "description": "Agendamento online e servicos do Salao Nathalia Andrade",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf9f8",
+  "theme_color": "#e2b1b1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/z0mCqFy/logosemfundo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/z0mCqFy/logosemfundo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

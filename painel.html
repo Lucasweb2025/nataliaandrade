@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#faf9f8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Nathalia Andrade — Salão</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="https://i.ibb.co/z0mCqFy/logosemfundo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .brand-font { font-family: 'Playfair Display', serif; }
+    .bg-rose-gold { background-color: #e2b1b1; }
+    .text-rose-gold { color: #b88585; }
+    .border-rose-gold { border-color: #e2b1b1; }
+    .safe-bottom { padding-bottom: max(5rem, env(safe-area-inset-bottom)); }
+    .logo-fallback { display: none; }
+    img.logo-img[data-error="1"] + .logo-fallback { display: block; }
+    img.logo-img[data-error="1"] { display: none; }
+  </style>
+</head>
+<body class="bg-[#faf9f8] text-slate-800 min-h-screen">
+
+  <!-- Mobile / tablet: topo compacto -->
+  <header class="lg:hidden bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="px-4 py-4 flex items-center justify-between gap-3">
+      <a href="agenda.html" class="shrink-0 bg-[#1a1a1a] text-white px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider">
+        + Agendar
+      </a>
+      <div class="flex-1 flex flex-col items-center min-w-0">
+        <img
+          src="https://i.ibb.co/z0mCqFy/logosemfundo.png"
+          alt="Nathalia Andrade"
+          class="logo-img h-16 sm:h-20 w-auto max-w-[180px] object-contain"
+          onerror="this.dataset.error='1'"
+        />
+        <div class="logo-fallback text-center">
+          <p class="brand-font text-lg text-slate-900 tracking-widest uppercase">Nathalia Andrade</p>
+          <p class="text-[10px] text-rose-gold font-bold uppercase tracking-[0.2em]">Salão de Beleza</p>
+        </div>
+      </div>
+      <span class="w-[72px] shrink-0"></span>
+    </div>
+    <nav class="flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide">
+      <a href="painel.html" class="shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-[#1a1a1a] text-white">Painel</a>
+      <a href="agenda.html" class="shrink-0 px-4 py-2 rounded-full text-xs font-medium text-slate-500 bg-slate-50">Agenda</a>
+      <a href="agenda.html" class="shrink-0 px-4 py-2 rounded-full text-xs font-medium text-slate-500 bg-slate-50">Agendar cliente</a>
+    </nav>
+  </header>
+
+  <div class="flex min-h-screen flex-col lg:flex-row">
+
+    <!-- Desktop: sidebar -->
+    <aside class="hidden lg:flex w-72 bg-white border-r border-slate-200 flex-col justify-between p-8 shrink-0">
+      <div>
+        <div class="mb-10">
+          <img
+            src="https://i.ibb.co/z0mCqFy/logosemfundo.png"
+            alt="Nathalia Andrade — Salão de Beleza"
+            class="logo-img w-full max-w-[200px] h-auto"
+            onerror="this.dataset.error='1'"
+          />
+          <div class="logo-fallback mt-2">
+            <p class="brand-font text-xl text-slate-900 tracking-widest uppercase">Nathalia Andrade</p>
+            <p class="text-xs text-rose-gold font-bold uppercase tracking-[0.2em]">Salão de Beleza</p>
+          </div>
+        </div>
+        <nav class="space-y-1">
+          <a href="painel.html" class="flex items-center gap-3 px-5 py-3 rounded-full text-xs font-semibold bg-[#1a1a1a] text-white shadow-lg">
+            <span class="opacity-70">01.</span> Painel
+          </a>
+          <a href="agenda.html" class="flex items-center gap-3 px-5 py-3 rounded-full text-xs font-medium text-slate-500 hover:bg-slate-50">
+            <span class="opacity-40">02.</span> Agenda / Agendar
+          </a>
+        </nav>
+      </div>
+      <div class="pt-6 border-t border-slate-100">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">📍 Ateliê de Beleza</p>
+        <p class="text-[11px] font-semibold text-slate-700 leading-relaxed">
+          Rua Julio Frank, 111 A<br />
+          <span class="text-slate-400">Parque Araribá, SP</span>
+        </p>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 safe-bottom lg:pb-0">
+
+      <header class="hidden lg:flex bg-white/80 backdrop-blur-md border-b border-slate-200 py-5 px-8 items-center justify-between sticky top-0 z-10">
+        <div>
+          <span class="text-[10px] font-bold text-rose-gold uppercase tracking-[0.2em]">Painel da Nathalia</span>
+          <h1 class="text-lg font-semibold text-slate-900">Dashboard de Atendimento</h1>
+        </div>
+        <a href="agenda.html" class="bg-[#1a1a1a] hover:bg-slate-800 text-white px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase shadow-md">
+          + Agendar
+        </a>
+      </header>
+
+      <main class="p-4 sm:p-6 md:p-10 max-w-6xl w-full mx-auto space-y-6 sm:space-y-8">
+
+        <div class="lg:hidden">
+          <span class="text-[10px] font-bold text-rose-gold uppercase tracking-[0.2em]">Painel</span>
+          <h1 class="text-lg font-semibold text-slate-900">Agendamentos de hoje</h1>
+        </div>
+
+        <!-- Cards: todos visíveis no celular -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Agendamentos hoje</p>
+            <p id="stat-today-count" class="text-2xl font-light text-slate-900">0 <span class="text-sm text-slate-300">Hoje</span></p>
+            <p class="text-[10px] text-slate-400 mt-2">Atualizado em tempo real</p>
+          </div>
+          <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Link para clientes</p>
+            <a href="agenda.html" class="text-sm font-semibold text-rose-gold underline">Abrir página de agendamento</a>
+            <p class="text-[10px] text-slate-400 mt-2">Envie este link no WhatsApp</p>
+          </div>
+          <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-100 shadow-sm sm:col-span-2 lg:col-span-1">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Horário de funcionamento</p>
+            <p class="text-sm font-medium text-slate-800">Terça a Sábado</p>
+            <p class="text-sm text-slate-500">9h às 18h</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
+
+          <div class="xl:col-span-2 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <h2 class="brand-font text-xl text-slate-900">Agenda de Hoje</h2>
+              <a href="agenda.html" class="text-[11px] font-bold text-rose-gold uppercase border-b border-rose-gold self-start">
+                Abrir calendário completo →
+              </a>
+            </div>
+
+            <p id="appointments-empty" class="hidden text-sm text-slate-500 bg-white rounded-3xl border border-slate-100 p-6 text-center">
+              Nenhum agendamento hoje.<br />
+              <a href="agenda.html" class="text-rose-gold font-semibold underline mt-2 inline-block">Compartilhar link de agendamento</a>
+            </p>
+            <div id="appointments-list" class="space-y-3"></div>
+          </div>
+
+          <div class="bg-[#1a1a1a] rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-gold/10 rounded-full blur-3xl"></div>
+            <h2 class="brand-font text-xl sm:text-2xl mb-6">Serviços <span class="text-rose-gold italic">Signature</span></h2>
+            <div class="space-y-5 text-[11px] font-light tracking-wide">
+              <div>
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-3">Cabelo</p>
+                <ul class="space-y-2">
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Progressivas</span><span class="text-rose-gold shrink-0">$$</span></li>
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Selagem Térmica</span><span class="text-rose-gold shrink-0">$$</span></li>
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Botox Capilar</span><span class="text-rose-gold shrink-0">$$</span></li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-3">Estética</p>
+                <ul class="space-y-2">
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Manicure & Pedicure</span><span class="text-rose-gold shrink-0">$</span></li>
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Design de Sobrancelhas</span><span class="text-rose-gold shrink-0">$</span></li>
+                  <li class="flex justify-between gap-2 border-b border-white/5 pb-2"><span>Sobrancelhas com Henna</span><span class="text-rose-gold shrink-0">$</span></li>
+                </ul>
+              </div>
+            </div>
+            <p class="mt-8 text-[10px] text-center text-slate-400 italic">"Realçando sua beleza natural com excelência."</p>
+          </div>
+        </div>
+
+        <!-- Endereço no mobile (sidebar estava escondida) -->
+        <section class="lg:hidden bg-white rounded-3xl border border-slate-100 p-5">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">📍 Localização</p>
+          <p class="text-sm font-semibold text-slate-700">Rua Julio Frank, 111 A</p>
+          <p class="text-sm text-slate-400">Parque Araribá, SP</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Menu fixo inferior — celular e tablet -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around">
+    <a href="painel.html" class="flex flex-col items-center gap-1 px-3 py-2 text-rose-gold min-w-0">
+      <span class="text-lg">◉</span>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Painel</span>
+    </a>
+    <a href="agenda.html" class="flex flex-col items-center gap-1 px-3 py-2 text-slate-400 min-w-0">
+      <span class="text-lg">📅</span>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Agendar</span>
+    </a>
+    <a href="agenda.html" class="flex flex-col items-center gap-1 px-3 py-2 bg-[#1a1a1a] text-white rounded-2xl px-4 min-w-0">
+      <span class="text-lg">+</span>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Novo</span>
+    </a>
+  </nav>
+
+  <!-- WhatsApp flutuante -->
+  <a href="https://wa.me/5511984270908" target="_blank" rel="noopener"
+    class="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-40 w-14 h-14 bg-[#25D366] hover:bg-[#1ebe57] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
+    aria-label="WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script>
+(function () {
+  'use strict';
+  var STORAGE_KEY = 'na-agendamentos';
+
+  function loadBookings() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function dateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function formatTime(time) {
+    var h = parseInt(time.split(':')[0], 10);
+    return { display: time, period: h >= 12 ? 'PM' : 'AM' };
+  }
+
+  function whatsappLink(phone, name, service, date, time) {
+    var digits = phone.replace(/\D/g, '');
+    var msg = encodeURIComponent('Olá! Sou ' + name + '. Agendei ' + service + ' para ' + date + ' às ' + time + '.');
+    return 'https://wa.me/55' + digits + '?text=' + msg;
+  }
+
+  function renderDashboard() {
+    var bookings = loadBookings();
+    var today = dateKey(new Date());
+    var todayList = bookings
+      .filter(function (b) { return b.date === today; })
+      .sort(function (a, b) { return a.time.localeCompare(b.time); });
+
+    var countEl = document.getElementById('stat-today-count');
+    var listEl = document.getElementById('appointments-list');
+    var emptyEl = document.getElementById('appointments-empty');
+
+    if (countEl) {
+      countEl.innerHTML = todayList.length + ' <span class="text-sm text-slate-300">Hoje</span>';
+    }
+    if (!listEl) return;
+
+    if (todayList.length === 0) {
+      listEl.innerHTML = '';
+      if (emptyEl) emptyEl.classList.remove('hidden');
+      return;
+    }
+
+    if (emptyEl) emptyEl.classList.add('hidden');
+    listEl.innerHTML = todayList.map(function (b) {
+      var info = formatTime(b.time);
+      var waHref = b.phone
+        ? ' href="' + whatsappLink(b.phone, b.name, b.service, b.date, b.time) + '" target="_blank" rel="noopener"'
+        : '';
+      return '<div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">' +
+        '<div class="flex items-center gap-4 sm:gap-5 min-w-0">' +
+          '<div class="text-center border-r border-slate-100 pr-4 shrink-0">' +
+            '<p class="text-sm font-bold text-slate-900">' + b.time + '</p>' +
+            '<p class="text-[10px] text-slate-400 font-bold">' + info.period + '</p>' +
+          '</div>' +
+          '<div class="min-w-0">' +
+            '<p class="text-sm font-semibold text-slate-800 truncate">' + b.name + '</p>' +
+            '<p class="text-[11px] text-rose-gold font-medium truncate">' + b.service + '</p>' +
+            '<p class="text-[10px] text-slate-400 mt-0.5">' + (b.phone || '') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="flex items-center gap-2 shrink-0 self-end sm:self-center">' +
+          '<span class="w-2 h-2 rounded-full bg-rose-gold"></span>' +
+          (waHref ? '<a' + waHref + ' class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-2 rounded-full">WhatsApp</a>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderDashboard);
+  } else {
+    renderDashboard();
+  }
+})();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>
