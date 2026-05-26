@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 
-const LOGO_URL = 'https://i.ibb.co/z0mCqFy/logosemfundo.png'
+const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
 
 export default function Navbar() {
   const { hash } = useLocation()

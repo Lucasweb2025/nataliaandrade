@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 
-const LOGO_URL = 'https://i.ibb.co/z0mCqFy/logosemfundo.png'
+const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
 const STORAGE_KEY = 'na-agendamentos'
 
 function dateKey(d) {

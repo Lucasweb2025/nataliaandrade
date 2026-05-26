@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 
-const LOGO_URL = 'https://i.ibb.co/z0mCqFy/logosemfundo.png'
+const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
 const STORAGE_KEY = 'na-agendamentos'
 const WORK_DAYS = [2, 3, 4, 5, 6]
 const SLOT_TIMES = [

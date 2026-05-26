@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ScrollReveal from '../components/ScrollReveal'
 
-const LOGO_URL = 'https://i.ibb.co/z0mCqFy/logosemfundo.png'
+const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
 const WA_URL = 'https://wa.me/5511984270908?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os.'
 
 const SERVICES = [
