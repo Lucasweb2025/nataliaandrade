@@ -8,8 +8,8 @@ export const MAPS_EMBED_URL =
   'https://maps.google.com/maps?q=Rua+Julio+Frank+111+A+Parque+Arariba+SP&hl=pt-BR&z=16&output=embed'
 export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
 
-/** Cole aqui o link do Instagram da Nathalia (ex: https://instagram.com/nathaliaandrade) */
-export const INSTAGRAM_URL = ''
+export const INSTAGRAM_HANDLE = 'nathaliaestrela1235'
+export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`
 
 /**
  * Fotos do salão: coloque arquivos em public/gallery/ e liste abaixo.
