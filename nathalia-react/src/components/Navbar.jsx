@@ -26,7 +26,7 @@ export default function Navbar() {
         className={`sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-xl border-gold/15 shadow-sm py-3'
-            : 'bg-white/80 backdrop-blur-xl border-gold/10 py-5'
+            : 'bg-white/80 backdrop-blur-xl border-gold/10 py-4 sm:py-5'
         }`}
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-4">
@@ -35,7 +35,7 @@ export default function Navbar() {
               src={LOGO_URL}
               alt="Nathalia Andrade"
               className={`w-auto object-contain transition-all duration-300 ${
-                scrolled ? 'h-14 sm:h-16' : 'h-16 sm:h-20'
+                scrolled ? 'h-20 sm:h-24' : 'h-28 sm:h-32'
               }`}
             />
           </Link>

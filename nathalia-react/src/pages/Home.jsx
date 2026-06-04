@@ -51,7 +51,7 @@ export default function Home() {
           <motion.img
             src={LOGO_URL}
             alt="Nathalia Andrade - Salão de Beleza"
-            className="w-64 sm:w-80 md:w-[22rem] h-auto mb-10"
+            className="w-[min(92vw,22rem)] sm:w-96 md:w-[28rem] h-auto mb-10"
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
