@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 
-const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
+import { LOGO_URL } from '../lib/constants'
 const STORAGE_KEY = 'na-agendamentos'
 
 function dateKey(d) {
@@ -89,7 +89,7 @@ export default function Painel() {
           <Link to="/agenda" className="shrink-0 btn-luxury px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider">
             Agendar
           </Link>
-          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain mix-blend-multiply" />
+          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain" />
           <span className="w-[72px] shrink-0" />
         </div>
         <nav className="flex gap-2 px-5 pb-3 overflow-x-auto">

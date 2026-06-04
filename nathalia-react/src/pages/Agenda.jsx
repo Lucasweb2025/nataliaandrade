@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
-
-const LOGO_URL = import.meta.env.BASE_URL + 'logo.png'
+import { LOGO_URL, BOOKING_SERVICES, ADDRESS, waLink } from '../lib/constants'
+import { formatPhone } from '../lib/utils'
 const STORAGE_KEY = 'na-agendamentos'
 const WORK_DAYS = [2, 3, 4, 5, 6]
 const SLOT_TIMES = [
@@ -58,8 +58,15 @@ export default function Agenda() {
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedTime, setSelectedTime] = useState(null)
+  const [searchParams] = useSearchParams()
   const [showModal, setShowModal] = useState(false)
   const [showToast, setShowToast] = useState(false)
+  const [lastBooking, setLastBooking] = useState(null)
+  const [phone, setPhone] = useState('')
+  const [service, setService] = useState(() => {
+    const s = searchParams.get('s')
+    return s && BOOKING_SERVICES.includes(s) ? s : ''
+  })
 
   useEffect(() => {
     try {
@@ -129,14 +136,18 @@ export default function Agenda() {
       date: selectedDate,
       time: selectedTime,
       name: String(fd.get('name') || '').trim(),
-      phone: String(fd.get('phone') || '').trim(),
-      service: fd.get('service'),
+      phone: phone.trim() || String(fd.get('phone') || '').trim(),
+      service: service || fd.get('service'),
       createdAt: new Date().toISOString(),
     }]
+    const booking = updated[updated.length - 1]
     saveBookings(updated)
+    setLastBooking(booking)
+    setPhone('')
+    setService('')
     closeModal()
     setShowToast(true)
-    setTimeout(() => setShowToast(false), 4000)
+    setTimeout(() => setShowToast(false), 8000)
   }
 
   // Calendar grid
@@ -162,7 +173,7 @@ export default function Agenda() {
           <Link to="/" className="text-[10px] sm:text-[11px] font-semibold text-warm-gray uppercase tracking-[0.15em] hover:text-rose-gold transition-colors duration-300">
             Inicio
           </Link>
-          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-12 sm:h-16 w-auto object-contain mix-blend-multiply" />
+          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain" />
           <span className="w-12 shrink-0" />
         </div>
       </header>
@@ -173,12 +184,26 @@ export default function Agenda() {
             Agendamento online
           </p>
           <h1 className="font-serif text-2xl md:text-3xl text-charcoal tracking-wide">
-            Escolha data e horario
+            Escolha data e horário
           </h1>
           <p className="text-sm text-warm-gray mt-3 max-w-md mx-auto leading-relaxed">
-            Toque no dia no calendario e depois no horario disponivel.
-            Horarios ja reservados aparecem em verde.
+            Toque no dia no calendário e depois no horário disponível.
+            Horários já reservados aparecem em verde.
           </p>
+          <div className="flex justify-center gap-2 mt-6 flex-wrap">
+            {['Data', 'Horário', 'Confirmar'].map((label, i) => (
+              <span
+                key={label}
+                className={`text-[9px] font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full border ${
+                  (i === 0 && selectedDate) || (i === 1 && selectedTime) || (i === 2 && showModal)
+                    ? 'border-rose-gold text-rose-gold bg-rose-gold-light/50'
+                    : 'border-gold/20 text-warm-gray-light'
+                }`}
+              >
+                {i + 1}. {label}
+              </span>
+            ))}
+          </div>
         </ScrollReveal>
 
         {/* Legenda */}
@@ -312,8 +337,8 @@ export default function Agenda() {
         </AnimatePresence>
 
         <div className="text-center text-[11px] text-warm-gray space-y-1">
-          <p>Rua Julio Frank, 111 A — Parque Arariba, SP</p>
-          <p>Atendimento: Terca a Sabado, 9h as 18h</p>
+          <p>{ADDRESS}</p>
+          <p>Atendimento: Terça a Sábado, 9h às 18h</p>
         </div>
       </main>
 
@@ -354,30 +379,33 @@ export default function Agenda() {
                   <label className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.15em]">Seu nome</label>
                   <input
                     type="text" name="name" required placeholder="Ex: Maria Silva"
-                    className="mt-1 w-full px-4 py-3 rounded-xl border border-gold/20 focus:border-rose-gold focus:outline-none text-sm transition-colors"
+                    className="input-luxury mt-1"
+                    autoComplete="name"
                   />
                 </div>
                 <div>
                   <label className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.15em]">WhatsApp</label>
                   <input
                     type="tel" name="phone" required placeholder="(11) 99999-9999"
-                    className="mt-1 w-full px-4 py-3 rounded-xl border border-gold/20 focus:border-rose-gold focus:outline-none text-sm transition-colors"
+                    className="input-luxury mt-1"
+                    value={phone}
+                    onChange={(e) => setPhone(formatPhone(e.target.value))}
+                    inputMode="numeric"
+                    autoComplete="tel"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.15em]">Servico</label>
+                  <label className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.15em]">Serviço</label>
                   <select
                     name="service" required
-                    className="mt-1 w-full px-4 py-3 rounded-xl border border-gold/20 focus:border-rose-gold focus:outline-none text-sm bg-white transition-colors"
+                    value={service}
+                    onChange={(e) => setService(e.target.value)}
+                    className="input-luxury mt-1"
                   >
                     <option value="">Selecione...</option>
-                    <option>Progressiva (Com/Sem Formol)</option>
-                    <option>Selagem Termica</option>
-                    <option>Botox Capilar Premium</option>
-                    <option>Manicure & Pedicure Spa</option>
-                    <option>Design de Sobrancelhas</option>
-                    <option>Sobrancelhas com Henna</option>
-                    <option>Outro servico</option>
+                    {BOOKING_SERVICES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex gap-3 pt-3">
@@ -400,16 +428,27 @@ export default function Agenda() {
         )}
       </AnimatePresence>
 
-      {/* Toast */}
       <AnimatePresence>
-        {showToast && (
+        {showToast && lastBooking && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-6 py-4 rounded-xl shadow-lg text-sm font-semibold max-w-[90vw] text-center"
+            className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] w-full max-w-sm"
           >
-            Agendamento confirmado! Horario reservado.
+            <div className="mx-4 bg-charcoal text-white px-5 py-4 rounded-2xl shadow-2xl border border-gold/20 text-center">
+              <p className="text-sm font-semibold mb-3">Agendamento confirmado</p>
+              <a
+                href={waLink(
+                  `Olá! Sou ${lastBooking.name}. Agendei ${lastBooking.service} para ${formatDateLabel(lastBooking.date)} às ${lastBooking.time}.`
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full py-2.5 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-xs font-bold uppercase tracking-wider transition-colors"
+              >
+                Avisar no WhatsApp
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,4 +1,6 @@
-const WA_URL = 'https://wa.me/5511984270908?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os.'
+import { waLink } from '../lib/constants'
+
+const WA_URL = waLink('Olá! Gostaria de saber mais sobre os serviços.')
 
 export default function WhatsAppButton() {
   return (
