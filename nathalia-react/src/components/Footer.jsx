@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, INSTAGRAM_URL, waLink } from '../lib/constants'
+import { NAV_LINKS } from '../lib/nav'
 
 export default function Footer() {
   return (
@@ -15,10 +16,12 @@ export default function Footer() {
             <p>{ADDRESS}</p>
             <p>{HOURS_LABEL}</p>
             <nav className="flex flex-wrap justify-center sm:justify-start gap-4 pt-2">
-              <a href="/#servicos" className="hover:text-rose-gold transition-colors">Serviços</a>
-              <a href="/#galeria" className="hover:text-rose-gold transition-colors">Galeria</a>
+              {NAV_LINKS.map((link) => (
+                <Link key={link.to} to={link.to} className="hover:text-rose-gold transition-colors">
+                  {link.label}
+                </Link>
+              ))}
               <Link to="/agenda" className="hover:text-rose-gold transition-colors">Agendar</Link>
-              <a href="/#localizacao" className="hover:text-rose-gold transition-colors">Local</a>
               {INSTAGRAM_URL ? (
                 <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-rose-gold transition-colors">
                   Instagram

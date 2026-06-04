@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { LOGO_URL } from '../lib/constants'
+import { NAV_LINKS } from '../lib/nav'
 import MobileNav from './MobileNav'
-
-const NAV_LINKS = [
-  { href: '/#servicos', label: 'Serviços' },
-  { href: '/#galeria', label: 'Galeria' },
-  { href: '/#sobre', label: 'Sobre' },
-  { href: '/#localizacao', label: 'Local' },
-]
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -43,13 +37,15 @@ export default function Navbar() {
 
           <div className="hidden sm:flex items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.15em] text-warm-gray">
             {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="hover:text-rose-gold transition-colors duration-300"
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `hover:text-rose-gold transition-colors duration-300 ${isActive ? 'text-rose-gold' : ''}`
+                }
               >
                 {link.label}
-              </a>
+              </NavLink>
             ))}
           </div>
 

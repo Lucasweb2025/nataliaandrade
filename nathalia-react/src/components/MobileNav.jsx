@@ -1,14 +1,9 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { NAV_LINKS } from '../lib/nav'
 
-const LINKS = [
-  { href: '/#servicos', label: 'Serviços' },
-  { href: '/#galeria', label: 'Galeria' },
-  { href: '/#sobre', label: 'Sobre' },
-  { href: '/#localizacao', label: 'Local' },
-  { href: '/agenda', label: 'Agendar', primary: true },
-]
+const LINKS = [...NAV_LINKS, { to: '/agenda', label: 'Agendar', primary: true }]
 
 export default function MobileNav({ open, onClose }) {
   useEffect(() => {
@@ -49,24 +44,24 @@ export default function MobileNav({ open, onClose }) {
             </div>
             <div className="flex flex-col gap-1 p-5">
               {LINKS.map((link) =>
-                link.href.startsWith('/agenda') ? (
+                link.primary ? (
                   <Link
-                    key={link.href}
-                    to="/agenda"
+                    key={link.to}
+                    to={link.to}
                     onClick={onClose}
                     className="btn-luxury text-center py-4 rounded-full text-xs font-bold uppercase tracking-[0.18em] mt-2"
                   >
                     {link.label}
                   </Link>
                 ) : (
-                  <a
-                    key={link.href}
-                    href={link.href}
+                  <Link
+                    key={link.to}
+                    to={link.to}
                     onClick={onClose}
                     className="py-4 px-4 text-sm font-semibold text-charcoal border-b border-gold/8 hover:text-rose-gold transition-colors uppercase tracking-[0.12em]"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 )
               )}
             </div>

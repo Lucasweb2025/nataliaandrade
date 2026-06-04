@@ -8,23 +8,25 @@ const PLACEHOLDERS = [
   { label: 'Detalhes e acabamento' },
 ]
 
-export default function Gallery() {
+export default function Gallery({ hideHeader = false }) {
   const hasPhotos = GALLERY_IMAGES.length > 0
 
   return (
-    <section id="galeria" className="py-20 sm:py-28 bg-white scroll-mt-24">
+    <section id="galeria" className={`bg-white ${hideHeader ? 'py-12 sm:py-16' : 'py-20 sm:py-28 scroll-mt-24'}`}>
       <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        <ScrollReveal className="text-center mb-12 sm:mb-16">
-          <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.35em] mb-4">Galeria</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-charcoal tracking-wide">
-            Conheça o <span className="text-rose-gold italic">espaço</span>
-          </h2>
-          <p className="text-sm text-warm-gray mt-4 max-w-lg mx-auto leading-relaxed">
-            {hasPhotos
-              ? 'Fotos reais do nosso salão e dos nossos trabalhos.'
-              : 'Em breve, fotos do salão e dos trabalhos realizados.'}
-          </p>
-        </ScrollReveal>
+        {!hideHeader && (
+          <ScrollReveal className="text-center mb-12 sm:mb-16">
+            <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.35em] mb-4">Galeria</p>
+            <h2 className="font-serif text-3xl sm:text-4xl text-charcoal tracking-wide">
+              Conheça o <span className="text-rose-gold italic">espaço</span>
+            </h2>
+            <p className="text-sm text-warm-gray mt-4 max-w-lg mx-auto leading-relaxed">
+              {hasPhotos
+                ? 'Fotos reais do nosso salão e dos nossos trabalhos.'
+                : 'Em breve, fotos do salão e dos trabalhos realizados.'}
+            </p>
+          </ScrollReveal>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {hasPhotos
