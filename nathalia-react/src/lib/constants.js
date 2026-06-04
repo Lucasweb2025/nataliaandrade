@@ -11,6 +11,9 @@ export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
 export const INSTAGRAM_HANDLE = 'nathaliaestrela1235'
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`
 
+export const DEVELOPER_INSTAGRAM_HANDLE = 'lucasweb2025'
+export const DEVELOPER_INSTAGRAM_URL = `https://www.instagram.com/${DEVELOPER_INSTAGRAM_HANDLE}/`
+
 /**
  * Fotos do salão: coloque arquivos em public/gallery/ e liste abaixo.
  * Exemplo: { src: `${import.meta.env.BASE_URL}gallery/salao-1.jpg`, alt: 'Interior do salão' }

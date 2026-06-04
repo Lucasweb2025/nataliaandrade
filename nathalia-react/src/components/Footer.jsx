@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, INSTAGRAM_URL, waLink } from '../lib/constants'
+import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, INSTAGRAM_URL, DEVELOPER_INSTAGRAM_URL, waLink } from '../lib/constants'
 import { NAV_LINKS } from '../lib/nav'
 
 export default function Footer() {
@@ -42,9 +42,14 @@ export default function Footer() {
         </div>
         <div className="border-t border-white/5 mt-10 pt-6 text-center">
           <p className="text-[10px] text-warm-gray tracking-wider">
-            Desenvolvido por{' '}
-            <a href="https://github.com/lucasweb2025" target="_blank" rel="noopener noreferrer" className="text-warm-gray-light hover:text-white transition-colors">
-              L.A Custom
+            desenvolvido por{' '}
+            <a
+              href={DEVELOPER_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-warm-gray-light hover:text-white transition-colors font-medium"
+            >
+              Lucasweb
             </a>
           </p>
         </div>
