@@ -4,8 +4,8 @@ import { motion } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 
 import { LOGO_URL, HOURS_LABEL, SERVICES } from '../lib/constants'
-
-const STORAGE_KEY = 'na-agendamentos'
+import { fetchBookings, subscribeBookings } from '../lib/bookings'
+import { isSupabaseConfigured } from '../lib/supabase'
 
 const SERVICES_PANEL = [
   { category: 'Cabelo', titles: ['Progressiva', 'Botox Capilar', 'Selagem Térmica', 'Reconstrução Capilar', 'Hidratação'] },
@@ -41,15 +41,15 @@ export default function Painel() {
   const [bookings, setBookings] = useState([])
 
   useEffect(() => {
-    function load() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        setBookings(raw ? JSON.parse(raw) : [])
-      } catch { setBookings([]) }
+    fetchBookings().then(setBookings).catch(() => setBookings([]))
+    const unsub = subscribeBookings(setBookings)
+    const interval = isSupabaseConfigured ? null : setInterval(() => {
+      fetchBookings().then(setBookings).catch(() => {})
+    }, 5000)
+    return () => {
+      unsub()
+      if (interval) clearInterval(interval)
     }
-    load()
-    const interval = setInterval(load, 5000)
-    return () => clearInterval(interval)
   }, [])
 
   const today = dateKey(new Date())
@@ -138,7 +138,9 @@ export default function Painel() {
               <p className="text-2xl font-light text-charcoal">
                 {todayList.length} <span className="text-sm text-warm-gray-light">Hoje</span>
               </p>
-              <p className="text-[10px] text-warm-gray mt-2">Atualizado em tempo real</p>
+              <p className="text-[10px] text-warm-gray mt-2">
+              {isSupabaseConfigured ? 'Nuvem — tempo real' : 'Atualizado a cada 5s'}
+            </p>
             </motion.div>
 
             <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">

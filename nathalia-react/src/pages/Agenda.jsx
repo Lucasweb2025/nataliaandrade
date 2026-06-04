@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 import { LOGO_URL, BOOKING_SERVICES, ADDRESS, HOURS_LABEL, SLOT_TIMES, waLink } from '../lib/constants'
 import { formatPhone } from '../lib/utils'
-const STORAGE_KEY = 'na-agendamentos'
+import { fetchBookings, createBooking, subscribeBookings } from '../lib/bookings'
+import { isSupabaseConfigured } from '../lib/supabase'
+
 const WORK_DAYS = [2, 3, 4, 5, 6]
 
 function dateKey(d) {
@@ -42,13 +44,10 @@ function formatDateLabel(dateStr) {
   })
 }
 
-function newId() {
-  if (crypto?.randomUUID) return crypto.randomUUID()
-  return `b-${Date.now()}-${Math.random().toString(36).slice(2)}`
-}
-
 export default function Agenda() {
   const [bookings, setBookings] = useState([])
+  const [loadingBookings, setLoadingBookings] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear())
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
   const [selectedDate, setSelectedDate] = useState(null)
@@ -64,10 +63,17 @@ export default function Agenda() {
   })
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      setBookings(raw ? JSON.parse(raw) : [])
-    } catch { setBookings([]) }
+    let cancelled = false
+    fetchBookings()
+      .then((data) => { if (!cancelled) setBookings(data) })
+      .catch(() => { if (!cancelled) setBookings([]) })
+      .finally(() => { if (!cancelled) setLoadingBookings(false) })
+
+    const unsub = subscribeBookings(setBookings)
+    return () => {
+      cancelled = true
+      unsub()
+    }
   }, [])
 
   useEffect(() => {
@@ -77,11 +83,6 @@ export default function Agenda() {
       nextDay.setDate(nextDay.getDate() + 1)
     }
     setSelectedDate(dateKey(nextDay))
-  }, [])
-
-  const saveBookings = useCallback((updated) => {
-    setBookings(updated)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
   }, [])
 
   const isBooked = useCallback((dateStr, time) => {
@@ -117,32 +118,41 @@ export default function Agenda() {
     setSelectedTime(null)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!selectedDate || !selectedTime) return
+    if (!selectedDate || !selectedTime || submitting) return
     if (isBooked(selectedDate, selectedTime)) {
-      alert('Este horario acabou de ser reservado. Escolha outro.')
+      alert('Este horário acabou de ser reservado. Escolha outro.')
       closeModal()
       return
     }
     const fd = new FormData(e.target)
-    const updated = [...bookings, {
-      id: newId(),
-      date: selectedDate,
-      time: selectedTime,
-      name: String(fd.get('name') || '').trim(),
-      phone: phone.trim() || String(fd.get('phone') || '').trim(),
-      service: service || fd.get('service'),
-      createdAt: new Date().toISOString(),
-    }]
-    const booking = updated[updated.length - 1]
-    saveBookings(updated)
-    setLastBooking(booking)
-    setPhone('')
-    setService('')
-    closeModal()
-    setShowToast(true)
-    setTimeout(() => setShowToast(false), 8000)
+    setSubmitting(true)
+    try {
+      const booking = await createBooking({
+        date: selectedDate,
+        time: selectedTime,
+        name: String(fd.get('name') || '').trim(),
+        phone: phone.trim() || String(fd.get('phone') || '').trim(),
+        service: service || fd.get('service'),
+      })
+      const fresh = await fetchBookings()
+      setBookings(fresh)
+      setLastBooking(booking)
+      setPhone('')
+      setService('')
+      closeModal()
+      setShowToast(true)
+      setTimeout(() => setShowToast(false), 8000)
+    } catch (err) {
+      const msg = err?.code === '23505'
+        ? 'Este horário acabou de ser reservado. Escolha outro.'
+        : 'Não foi possível confirmar. Verifique a conexão e tente de novo.'
+      alert(msg)
+      if (err?.code === '23505') closeModal()
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   // Calendar grid
@@ -184,7 +194,13 @@ export default function Agenda() {
           <p className="text-sm text-warm-gray mt-3 max-w-md mx-auto leading-relaxed">
             Toque no dia no calendário e depois no horário disponível.
             Horários já reservados aparecem em verde.
+            {isSupabaseConfigured && (
+              <span className="block mt-2 text-[11px] text-rose-gold">Agendamentos sincronizados em tempo real.</span>
+            )}
           </p>
+          {loadingBookings && (
+            <p className="text-[11px] text-warm-gray-light mt-2">Carregando horários...</p>
+          )}
           <div className="flex justify-center gap-2 mt-6 flex-wrap">
             {['Data', 'Horário', 'Confirmar'].map((label, i) => (
               <span
@@ -412,9 +428,10 @@ export default function Agenda() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-full btn-luxury text-xs font-bold uppercase tracking-[0.12em]"
+                    disabled={submitting}
+                    className="flex-1 py-3 rounded-full btn-luxury text-xs font-bold uppercase tracking-[0.12em] disabled:opacity-60"
                   >
-                    Confirmar
+                    {submitting ? 'Salvando...' : 'Confirmar'}
                   </button>
                 </div>
               </form>
