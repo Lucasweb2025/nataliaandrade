@@ -2,12 +2,6 @@ import { motion } from 'framer-motion'
 import ScrollReveal from './ScrollReveal'
 import { GALLERY_IMAGES } from '../lib/constants'
 
-const PLACEHOLDERS = [
-  { label: 'Ambiente do salão' },
-  { label: 'Tratamentos capilares' },
-  { label: 'Detalhes e acabamento' },
-]
-
 export default function Gallery({ hideHeader = false }) {
   const hasPhotos = GALLERY_IMAGES.length > 0
 
@@ -18,45 +12,49 @@ export default function Gallery({ hideHeader = false }) {
           <ScrollReveal className="text-center mb-12 sm:mb-16">
             <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.35em] mb-4">Galeria</p>
             <h2 className="font-serif text-3xl sm:text-4xl text-charcoal tracking-wide">
-              Conheça o <span className="text-rose-gold italic">espaço</span>
+              Nossos <span className="text-rose-gold italic">trabalhos</span>
             </h2>
             <p className="text-sm text-warm-gray mt-4 max-w-lg mx-auto leading-relaxed">
               {hasPhotos
-                ? 'Fotos reais do nosso salão e dos nossos trabalhos.'
-                : 'Em breve, fotos do salão e dos trabalhos realizados.'}
+                ? 'Resultados reais de cabelo e unhas — feitos com carinho no salão.'
+                : 'Em breve, fotos dos trabalhos realizados.'}
             </p>
           </ScrollReveal>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {hasPhotos
-            ? GALLERY_IMAGES.map((img, i) => (
-                <motion.figure
-                  key={img.src}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06, duration: 0.5 }}
-                  className="aspect-[4/5] rounded-2xl overflow-hidden border border-gold/15 bg-marble"
-                >
+        {hasPhotos ? (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
+            {GALLERY_IMAGES.map((img, i) => (
+              <motion.figure
+                key={img.src}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ delay: Math.min(i * 0.07, 0.5), duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                className="group"
+              >
+                <div className="aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-gold/10 bg-marble shadow-[0_8px_30px_-12px_rgba(61,43,31,0.12)] transition-shadow duration-500 group-hover:shadow-[0_16px_40px_-12px_rgba(61,43,31,0.18)]">
                   <img
                     src={img.src}
                     alt={img.alt}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    loading={i < 3 ? 'eager' : 'lazy'}
+                    decoding="async"
                   />
-                </motion.figure>
-              ))
-            : PLACEHOLDERS.map((item, i) => (
-                <div
-                  key={item.label}
-                  className="aspect-[4/5] rounded-2xl border border-dashed border-gold/25 bg-marble flex flex-col items-center justify-center p-6 text-center"
-                >
-                  <span className="font-serif text-4xl text-gold/25 mb-3">{String(i + 1).padStart(2, '0')}</span>
-                  <p className="text-xs font-semibold text-warm-gray uppercase tracking-wider">{item.label}</p>
                 </div>
-              ))}
-        </div>
+                {img.category && (
+                  <figcaption className="mt-2.5 text-center">
+                    <span className="text-[10px] font-semibold text-warm-gray-light uppercase tracking-[0.2em]">
+                      {img.category}
+                    </span>
+                  </figcaption>
+                )}
+              </motion.figure>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-sm text-warm-gray">Fotos em breve.</p>
+        )}
       </div>
     </section>
   )

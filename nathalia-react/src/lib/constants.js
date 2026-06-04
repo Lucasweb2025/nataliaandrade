@@ -14,23 +14,24 @@ export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`
 export const DEVELOPER_INSTAGRAM_HANDLE = 'lucasdmxx'
 export const DEVELOPER_INSTAGRAM_URL = `https://www.instagram.com/${DEVELOPER_INSTAGRAM_HANDLE}/`
 
-const gallery = (file, alt) => ({
+const gallery = (file, alt, category) => ({
   src: `${import.meta.env.BASE_URL}gallery/${file}`,
   alt,
+  category,
 })
 
-/** Fotos dos trabalhos — arquivos em public/gallery/ */
+/** Ordem leve: alterna cabelo e unhas */
 export const GALLERY_IMAGES = [
-  gallery('cabelo-1.jpg', 'Tratamento capilar'),
-  gallery('cabelo-2.jpg', 'Tratamento capilar'),
-  gallery('cabelo-3.jpg', 'Tratamento capilar'),
-  gallery('cabelo-4.jpg', 'Tratamento capilar'),
-  gallery('cabelo-5.jpg', 'Tratamento capilar'),
-  gallery('unhas-1.jpg', 'Manicure'),
-  gallery('unhas-2.jpg', 'Manicure'),
-  gallery('unhas-3.jpg', 'Manicure'),
-  gallery('unhas-4.jpg', 'Manicure'),
-  gallery('unhas-5.jpg', 'Manicure e pedicure'),
+  gallery('cabelo-1.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-1.jpg', 'Manicure', 'Unhas'),
+  gallery('cabelo-2.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-2.jpg', 'Manicure', 'Unhas'),
+  gallery('cabelo-3.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-3.jpg', 'Manicure', 'Unhas'),
+  gallery('cabelo-4.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-4.jpg', 'Manicure', 'Unhas'),
+  gallery('cabelo-5.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-5.jpg', 'Manicure e pedicure', 'Unhas'),
 ]
 
 /** Troque pelos depoimentos reais das clientes (com autorização) */
