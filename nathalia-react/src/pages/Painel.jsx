@@ -6,6 +6,7 @@ import PanelScheduleForm from '../components/PanelScheduleForm'
 import PanelBookingCard from '../components/PanelBookingCard'
 import PanelResumo from '../components/PanelResumo'
 import PanelListToolbar from '../components/PanelListToolbar'
+import PanelGaleria from '../components/PanelGaleria'
 import { LOGO_URL, HOURS_LABEL } from '../lib/constants'
 import {
   fetchBookings,
@@ -25,6 +26,7 @@ const NAV = [
   { id: 'resumo', label: 'Resumo' },
   { id: 'agendar', label: 'Agendar' },
   { id: 'bloquear', label: 'Bloquear' },
+  { id: 'galeria', label: 'Fotos' },
 ]
 
 const stagger = {
@@ -66,6 +68,7 @@ export default function Painel() {
   const [view, setView] = useState('hoje')
   const [cancellingId, setCancellingId] = useState(null)
   const [copyOk, setCopyOk] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [savedFlash, setSavedFlash] = useState(false)
   const [search, setSearch] = useState('')
   const [serviceFilter, setServiceFilter] = useState('')
@@ -189,6 +192,23 @@ export default function Painel() {
     }
   }
 
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    try {
+      await refresh()
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
+  const navCounts = useMemo(
+    () => ({
+      hoje: todayClients.length,
+      semana: weekList.filter((b) => !isBlockedBooking(b)).length,
+    }),
+    [todayClients.length, weekList]
+  )
+
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(AGENDA_PUBLIC_URL)
@@ -203,6 +223,19 @@ export default function Painel() {
   const showList = listViews.includes(view)
   const showToolbar = showList
 
+  const navLabel = (item) => {
+    const n = navCounts[item.id]
+    if (n == null || n === 0) return item.label
+    return (
+      <>
+        {item.label}
+        <span className="ml-auto min-w-[1.25rem] h-5 px-1.5 rounded-full bg-rose-gold-light text-[10px] font-bold text-rose-gold-dark flex items-center justify-center">
+          {n}
+        </span>
+      </>
+    )
+  }
+
   const NavButtons = ({ className = '' }) => (
     <div className={className}>
       {NAV.map((item) => (
@@ -214,7 +247,7 @@ export default function Painel() {
             view === item.id ? 'btn-luxury' : 'text-warm-gray hover:bg-marble-warm'
           }`}
         >
-          {item.label}
+          {navLabel(item)}
         </button>
       ))}
       <Link
@@ -260,6 +293,15 @@ export default function Painel() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="btn-outline-gold px-3 py-2 rounded-full text-[9px] font-bold uppercase tracking-wider disabled:opacity-50"
+                title="Atualizar agendamentos"
+              >
+                {refreshing ? '...' : 'Atualizar'}
+              </button>
+              <button
+                type="button"
                 onClick={copyLink}
                 className="btn-outline-gold px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-wider"
               >
@@ -285,6 +327,11 @@ export default function Painel() {
                 }`}
               >
                 {item.label}
+                {navCounts[item.id] > 0 && (
+                  <span className="ml-1.5 min-w-[1.1rem] h-4 px-1 rounded-full bg-white/30 text-[9px] font-bold inline-flex items-center justify-center">
+                    {navCounts[item.id]}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -438,6 +485,8 @@ export default function Painel() {
           {view === 'bloquear' && (
             <PanelScheduleForm mode="block" bookings={bookings} onSuccess={onFormSuccess} />
           )}
+
+          {view === 'galeria' && <PanelGaleria />}
 
           {(showList || view === 'resumo') && (
             <section className="card-luxury rounded-2xl p-6">

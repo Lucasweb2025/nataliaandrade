@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 import { LOGO_URL, BOOKING_SERVICES, ADDRESS, HOURS_LABEL, SLOT_TIMES, waLink } from '../lib/constants'
+import { clientBookingWhatsAppMessage } from '../lib/share'
 import { formatPhone } from '../lib/utils'
 import { fetchBookings, createBooking, subscribeBookings } from '../lib/bookings'
 import { isSupabaseConfigured } from '../lib/supabase'
@@ -176,7 +177,7 @@ export default function Agenda() {
       <header className="bg-white/80 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-20">
         <div className="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between gap-2">
           <Link to="/" className="text-[10px] sm:text-[11px] font-semibold text-warm-gray uppercase tracking-[0.15em] hover:text-rose-gold transition-colors duration-300">
-            Inicio
+            Início
           </Link>
           <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain" />
           <span className="w-12 shrink-0" />
@@ -221,7 +222,7 @@ export default function Agenda() {
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider">
           <span className="flex items-center gap-2">
             <span className="w-4 h-4 rounded-md border-2 border-warm-gray-light/40 bg-white" />
-            Disponivel
+            Disponível
           </span>
           <span className="flex items-center gap-2">
             <span className="w-4 h-4 rounded-md bg-emerald-500" />
@@ -229,7 +230,7 @@ export default function Agenda() {
           </span>
           <span className="flex items-center gap-2">
             <span className="w-4 h-4 rounded-md bg-charcoal" />
-            Seu horario
+            Seu horário
           </span>
         </div>
 
@@ -296,12 +297,12 @@ export default function Agenda() {
               transition={{ duration: 0.4 }}
               className="card-luxury rounded-2xl p-6"
             >
-              <h3 className="font-serif text-lg text-charcoal mb-1 tracking-wide">Horarios disponiveis</h3>
+              <h3 className="font-serif text-lg text-charcoal mb-1 tracking-wide">Horários disponíveis</h3>
               <p className="text-sm text-rose-gold font-medium mb-5">{formatDateLabel(selectedDate)}</p>
 
               {!slotsAvailable ? (
                 <p className="text-sm text-warm-gray text-center py-6">
-                  Salao fechado neste dia. Escolha de terca a sabado.
+                  Salão fechado neste dia. Escolha de terça a sábado.
                 </p>
               ) : (
                 <>
@@ -338,7 +339,7 @@ export default function Agenda() {
                   </div>
                   {SLOT_TIMES.every(t => isBooked(selectedDate, t) || isPastTime(selectedDate, t)) && (
                     <p className="text-sm text-warm-gray text-center py-4 mt-2">
-                      Todos os horarios deste dia estao reservados. Tente outra data.
+                      Todos os horários deste dia estão reservados. Tente outra data.
                     </p>
                   )}
                 </>
@@ -356,7 +357,7 @@ export default function Agenda() {
       {/* Bottom nav mobile */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-white/90 backdrop-blur-xl border-t border-gold/10 flex justify-around px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <Link to="/" className="flex flex-col items-center text-warm-gray text-[9px] font-semibold uppercase py-2 tracking-wider">
-          <span className="text-sm mb-0.5">Inicio</span>
+          <span className="text-sm mb-0.5">Início</span>
         </Link>
         <Link to="/agenda" className="flex flex-col items-center text-rose-gold text-[9px] font-semibold uppercase py-2 tracking-wider">
           <span className="text-sm mb-0.5">Agendar</span>
@@ -451,9 +452,7 @@ export default function Agenda() {
             <div className="mx-4 bg-charcoal text-white px-5 py-4 rounded-2xl shadow-2xl border border-gold/20 text-center">
               <p className="text-sm font-semibold mb-3">Agendamento confirmado</p>
               <a
-                href={waLink(
-                  `Olá! Sou ${lastBooking.name}. Agendei ${lastBooking.service} para ${formatDateLabel(lastBooking.date)} às ${lastBooking.time}.`
-                )}
+                href={waLink(clientBookingWhatsAppMessage(lastBooking))}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block w-full py-2.5 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-xs font-bold uppercase tracking-wider transition-colors"

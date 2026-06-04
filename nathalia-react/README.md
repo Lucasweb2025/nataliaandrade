@@ -17,6 +17,7 @@ Site e sistema de agendamento online para o salão em Parque Arariba, SP.
 
 ### Painel (login)
 - Autenticação Supabase (e-mail + senha)
+- **Fotos** — enviar e remover imagens da galeria do site (Supabase Storage)
 - Agenda de hoje e próximos 7 dias
 - Histórico (30 dias)
 - Resumo financeiro estimado + gráfico de serviços
@@ -90,8 +91,10 @@ O `vite.config.js` usa `base: '/nataliaandrade/'`. Ao usar **domínio customizad
 
 1. Executar `supabase/schema.sql` — tabela `agendamentos` + RLS leitura/inserção pública
 2. Executar `supabase/schema-auth.sql` — políticas de update/delete para usuários autenticados (painel)
-3. **Authentication → Users** — criar usuário da profissional
-4. Habilitar provider **Email**
+3. Executar `supabase/schema-gallery.sql` — tabela `galeria_fotos` + bucket Storage `galeria`
+4. **Database → Replication** — ativar Realtime na tabela `galeria_fotos` (opcional; o site atualiza ao recarregar)
+5. **Authentication → Users** — criar usuário da profissional
+6. Habilitar provider **Email**
 
 ---
 

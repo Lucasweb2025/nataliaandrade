@@ -20,8 +20,8 @@ const gallery = (file, alt, category) => ({
   category,
 })
 
-/** Ordem leve: alterna cabelo e unhas */
-export const GALLERY_IMAGES = [
+/** Fotos fixas no deploy (fallback se ainda não houver upload no painel) */
+export const STATIC_GALLERY_IMAGES = [
   gallery('cabelo-1.jpg', 'Trabalho capilar', 'Cabelo'),
   gallery('unhas-1.jpg', 'Manicure', 'Unhas'),
   gallery('cabelo-2.jpg', 'Trabalho capilar', 'Cabelo'),
@@ -32,7 +32,15 @@ export const GALLERY_IMAGES = [
   gallery('unhas-4.jpg', 'Manicure', 'Unhas'),
   gallery('cabelo-5.jpg', 'Trabalho capilar', 'Cabelo'),
   gallery('unhas-5.jpg', 'Manicure e pedicure', 'Unhas'),
+  gallery('cabelo-6.jpg', 'Trabalho capilar', 'Cabelo'),
+  gallery('unhas-6.jpg', 'Manicure', 'Unhas'),
 ]
+
+/** @deprecated use STATIC_GALLERY_IMAGES ou fotos da nuvem */
+export const GALLERY_IMAGES = STATIC_GALLERY_IMAGES
+
+export const GALLERY_CATEGORIES = ['Todos', 'Cabelo', 'Unhas']
+export const GALLERY_UPLOAD_CATEGORIES = ['Cabelo', 'Unhas']
 
 /** Troque pelos depoimentos reais das clientes (com autorização) */
 export const TESTIMONIALS = [
