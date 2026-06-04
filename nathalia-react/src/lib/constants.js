@@ -3,26 +3,30 @@ export const PHONE_DISPLAY = '(11) 98427-0908'
 export const PHONE_WA = '5511984270908'
 export const ADDRESS = 'Rua Julio Frank, 111 A — Parque Arariba, SP'
 export const MAPS_URL = 'https://www.google.com/maps/search/Rua+Julio+Frank+111+A+Parque+Arariba+SP'
+export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
 
 export function waLink(text) {
   return `https://wa.me/${PHONE_WA}?text=${encodeURIComponent(text)}`
 }
 
 export const SERVICES = [
-  { title: 'Progressiva', duration: '3h', desc: 'Com ou sem formol. Alisa e reduz o volume dos fios com resultado duradouro.' },
-  { title: 'Selagem Térmica', duration: '2h', desc: 'Sela as cutículas do cabelo, com brilho intenso e menos frizz.' },
-  { title: 'Botox Capilar Premium', duration: '2h30', desc: 'Reposição de massa capilar. Cabelo mais denso, macio e com movimento.' },
-  { title: 'Manicure & Pedicure Spa', duration: '1h30', desc: 'Cuidado completo para mãos e pés com acabamento impecável.' },
-  { title: 'Design de Sobrancelhas', duration: '45min', desc: 'Modelagem personalizada para realçar o olhar.' },
-  { title: 'Sobrancelhas com Henna', duration: '1h', desc: 'Coloração natural com efeito duradouro.' },
+  { title: 'Progressiva', price: 'A partir de R$ 200,00', duration: '3h', desc: 'Com ou sem formol. Alisa e reduz o volume dos fios com resultado duradouro.' },
+  { title: 'Botox Capilar', price: 'A partir de R$ 150,00', duration: '2h30', desc: 'Reposição de massa capilar. Cabelo mais denso, macio e com movimento.' },
+  { title: 'Selagem Térmica', price: 'A partir de R$ 180,00', duration: '2h', desc: 'Sela as cutículas do cabelo, com brilho intenso e menos frizz.' },
+  { title: 'Reconstrução Capilar', price: 'A partir de R$ 80,00', duration: '1h30', desc: 'Tratamento de reconstrução para fios danificados e fragilizados.' },
+  { title: 'Hidratação', price: 'A partir de R$ 60,00', duration: '1h', desc: 'Hidratação profunda para maciez, brilho e saúde dos fios.' },
+  { title: 'Mão', price: 'R$ 35,00', duration: '45min', desc: 'Cuidado completo para as mãos com acabamento impecável.' },
+  { title: 'Pé', price: 'R$ 45,00', duration: '1h', desc: 'Cuidado completo para os pés com acabamento impecável.' },
+  { title: 'Pé e Mão', price: 'R$ 75,00', duration: '1h30', desc: 'Combo completo para mãos e pés.' },
+  { title: 'Corte Masculino', price: 'R$ 35,00', duration: '30min', desc: 'Corte masculino com acabamento profissional.' },
+  { title: 'Sobrancelha Design', price: 'R$ 25,00', duration: '30min', desc: 'Modelagem personalizada para realçar o olhar.' },
+  { title: 'Sobrancelha com Henna', price: 'R$ 50,00', duration: '1h', desc: 'Design com henna para definição e cor duradoura.' },
 ]
 
-export const BOOKING_SERVICES = [
-  'Progressiva (Com/Sem Formol)',
-  'Selagem Térmica',
-  'Botox Capilar Premium',
-  'Manicure & Pedicure Spa',
-  'Design de Sobrancelhas',
-  'Sobrancelhas com Henna',
-  'Outro serviço',
+export const BOOKING_SERVICES = SERVICES.map((s) => s.title)
+
+export const SLOT_TIMES = [
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '13:00', '13:30', '14:00', '14:30', '15:00',
+  '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00',
 ]

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { PHONE_DISPLAY, ADDRESS, waLink } from '../lib/constants'
+import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, waLink } from '../lib/constants'
 
 export default function Footer() {
   return (
@@ -13,7 +13,7 @@ export default function Footer() {
           </div>
           <div className="text-[11px] text-warm-gray-light space-y-2 leading-relaxed">
             <p>{ADDRESS}</p>
-            <p>Terça a Sábado, 9h às 18h</p>
+            <p>{HOURS_LABEL}</p>
             <nav className="flex flex-wrap justify-center sm:justify-start gap-4 pt-2">
               <a href="/#servicos" className="hover:text-rose-gold transition-colors">Serviços</a>
               <Link to="/agenda" className="hover:text-rose-gold transition-colors">Agendar</Link>

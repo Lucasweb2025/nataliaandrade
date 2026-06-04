@@ -2,15 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
-import { LOGO_URL, BOOKING_SERVICES, ADDRESS, waLink } from '../lib/constants'
+import { LOGO_URL, BOOKING_SERVICES, ADDRESS, HOURS_LABEL, SLOT_TIMES, waLink } from '../lib/constants'
 import { formatPhone } from '../lib/utils'
 const STORAGE_KEY = 'na-agendamentos'
 const WORK_DAYS = [2, 3, 4, 5, 6]
-const SLOT_TIMES = [
-  '09:00','09:30','10:00','10:30','11:00','11:30',
-  '12:00','13:00','13:30','14:00','14:30','15:00',
-  '15:30','16:00','16:30','17:00','17:30',
-]
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -338,7 +333,7 @@ export default function Agenda() {
 
         <div className="text-center text-[11px] text-warm-gray space-y-1">
           <p>{ADDRESS}</p>
-          <p>Atendimento: Terça a Sábado, 9h às 18h</p>
+          <p>Atendimento: {HOURS_LABEL}</p>
         </div>
       </main>
 

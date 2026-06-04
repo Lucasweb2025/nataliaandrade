@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ScrollReveal from '../components/ScrollReveal'
-import { LOGO_URL, SERVICES, waLink, ADDRESS, MAPS_URL } from '../lib/constants'
+import { LOGO_URL, SERVICES, waLink, ADDRESS, MAPS_URL, HOURS_LABEL } from '../lib/constants'
 
 const WA_URL = waLink('Olá! Gostaria de saber mais sobre os serviços.')
 
@@ -18,15 +18,6 @@ const STEPS = [
   { step: '2', title: 'Data e horário', desc: 'Selecione no calendário um horário disponível.' },
   { step: '3', title: 'Confirme', desc: 'Preencha nome e WhatsApp. Pronto — horário reservado.' },
 ]
-
-const SERVICE_BOOKING = {
-  Progressiva: 'Progressiva (Com/Sem Formol)',
-  'Selagem Térmica': 'Selagem Térmica',
-  'Botox Capilar Premium': 'Botox Capilar Premium',
-  'Manicure & Pedicure Spa': 'Manicure & Pedicure Spa',
-  'Design de Sobrancelhas': 'Design de Sobrancelhas',
-  'Sobrancelhas com Henna': 'Sobrancelhas com Henna',
-}
 
 const staggerContainer = {
   hidden: {},
@@ -151,15 +142,16 @@ export default function Home() {
             {SERVICES.map((svc) => (
               <motion.div key={svc.title} variants={staggerItem}>
                 <div className="card-luxury rounded-2xl p-8 h-full flex flex-col">
-                  <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-start justify-between gap-3 mb-2">
                     <h3 className="font-serif text-lg font-semibold text-charcoal tracking-wide">{svc.title}</h3>
-                    <span className="text-[10px] font-semibold text-rose-gold uppercase tracking-wider shrink-0 pt-1">
+                    <span className="text-[10px] font-semibold text-warm-gray uppercase tracking-wider shrink-0 pt-1">
                       {svc.duration}
                     </span>
                   </div>
+                  <p className="font-serif text-xl text-rose-gold-dark mb-3 tracking-wide">{svc.price}</p>
                   <p className="text-sm text-warm-gray leading-relaxed flex-1">{svc.desc}</p>
                   <Link
-                    to={`/agenda?s=${encodeURIComponent(SERVICE_BOOKING[svc.title] || svc.title)}`}
+                    to={`/agenda?s=${encodeURIComponent(svc.title)}`}
                     className="inline-block mt-5 text-[10px] font-bold text-rose-gold uppercase tracking-[0.18em] border-b border-rose-gold/40 hover:border-rose-gold pb-0.5 transition-colors duration-300 self-start"
                   >
                     Agendar
@@ -219,8 +211,8 @@ export default function Home() {
                 <div className="space-y-3.5">
                   {[
                     ['Segunda-feira', 'Fechado', true],
-                    ['Terça a Sexta', '9h às 18h', false],
-                    ['Sábado', '9h às 18h', false],
+                    ['Terça a Sexta', '9h às 19h', false],
+                    ['Sábado', '9h às 19h', false],
                     ['Domingo', 'Fechado', true],
                   ].map(([day, time, closed]) => (
                     <div key={day} className="flex justify-between text-sm border-b border-gold/8 pb-3">

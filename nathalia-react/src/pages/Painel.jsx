@@ -3,8 +3,19 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import ScrollReveal from '../components/ScrollReveal'
 
-import { LOGO_URL } from '../lib/constants'
+import { LOGO_URL, HOURS_LABEL, SERVICES } from '../lib/constants'
+
 const STORAGE_KEY = 'na-agendamentos'
+
+const SERVICES_PANEL = [
+  { category: 'Cabelo', titles: ['Progressiva', 'Botox Capilar', 'Selagem Térmica', 'Reconstrução Capilar', 'Hidratação'] },
+  { category: 'Mãos e Pés', titles: ['Mão', 'Pé', 'Pé e Mão'] },
+  { category: 'Outros', titles: ['Corte Masculino', 'Sobrancelha Design', 'Sobrancelha com Henna'] },
+]
+
+function servicePrice(title) {
+  return SERVICES.find((s) => s.title === title)?.price ?? ''
+}
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -15,11 +26,6 @@ function whatsappLink(phone, name, service, date, time) {
   const msg = encodeURIComponent(`Ola! Sou ${name}. Agendei ${service} para ${date} as ${time}.`)
   return `https://wa.me/55${digits}?text=${msg}`
 }
-
-const SERVICES_LIST = [
-  { category: 'Cabelo', items: ['Progressivas', 'Selagem Termica', 'Botox Capilar'] },
-  { category: 'Estetica', items: ['Manicure & Pedicure', 'Design de Sobrancelhas', 'Sobrancelhas com Henna'] },
-]
 
 const stagger = {
   hidden: {},
@@ -145,8 +151,8 @@ export default function Painel() {
 
             <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6 sm:col-span-2 lg:col-span-1">
               <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-3">Horario de funcionamento</p>
-              <p className="text-sm font-medium text-charcoal">Terca a Sabado</p>
-              <p className="text-sm text-warm-gray">9h as 18h</p>
+              <p className="text-sm font-medium text-charcoal">Terça a Sábado</p>
+              <p className="text-sm text-warm-gray">9h às 19h</p>
             </motion.div>
           </motion.div>
 
@@ -214,13 +220,14 @@ export default function Painel() {
                   Servicos <span className="text-rose-gold italic">Signature</span>
                 </h2>
                 <div className="space-y-6 text-[11px] font-light tracking-wide">
-                  {SERVICES_LIST.map(cat => (
+                  {SERVICES_PANEL.map((cat) => (
                     <div key={cat.category}>
                       <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-[0.3em] mb-3">{cat.category}</p>
                       <ul className="space-y-2.5">
-                        {cat.items.map(item => (
-                          <li key={item} className="flex justify-between gap-2 border-b border-white/5 pb-2.5">
-                            <span>{item}</span>
+                        {cat.titles.map((title) => (
+                          <li key={title} className="flex justify-between gap-2 border-b border-white/5 pb-2.5">
+                            <span>{title}</span>
+                            <span className="text-rose-gold shrink-0 text-[10px]">{servicePrice(title)}</span>
                           </li>
                         ))}
                       </ul>
