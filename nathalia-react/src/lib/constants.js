@@ -11,7 +11,7 @@ export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
 export const INSTAGRAM_HANDLE = 'nathaliaestrela1235'
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`
 
-export const DEVELOPER_INSTAGRAM_HANDLE = 'lucasweb2025'
+export const DEVELOPER_INSTAGRAM_HANDLE = 'lucasdmxx'
 export const DEVELOPER_INSTAGRAM_URL = `https://www.instagram.com/${DEVELOPER_INSTAGRAM_HANDLE}/`
 
 /**
