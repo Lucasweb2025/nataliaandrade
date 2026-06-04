@@ -17,7 +17,7 @@ const STEPS = [
 
 const TEASERS = {
   '/servicos': 'Tratamentos capilares, unhas, sobrancelhas e mais.',
-  '/galeria': 'Conheça o ambiente do salão.',
+  '/galeria': 'Veja fotos dos trabalhos de cabelo e unhas.',
   '/sobre': 'História, valores e o cuidado em cada atendimento.',
   '/local': 'Endereço, horários e como chegar.',
 }

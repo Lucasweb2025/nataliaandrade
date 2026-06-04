@@ -11,7 +11,7 @@ export default function Galeria() {
           Conheça o <span className="text-rose-gold italic">espaço</span>
         </>
       }
-      subtitle="Fotos do salão e dos trabalhos realizados. Em breve, mais imagens reais do espaço."
+      subtitle="Trabalhos reais de cabelo e unhas feitos no salão."
       heroExtra={
         INSTAGRAM_URL ? (
           <a
