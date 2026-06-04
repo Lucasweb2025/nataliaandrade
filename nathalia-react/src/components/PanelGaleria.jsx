@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { usePanelGallery } from '../hooks/useGalleryPhotos'
-import { uploadGalleryPhoto, deleteGalleryPhoto, GALLERY_MAX_PHOTOS } from '../lib/gallery'
+import { uploadGalleryPhoto, deleteGalleryPhoto, GALLERY_PAGE_SIZE } from '../lib/gallery'
 import {
   GALLERY_PRESET_CATEGORIES,
   GALLERY_OTHER_LABEL,
@@ -26,7 +26,6 @@ export default function PanelGaleria() {
   const [message, setMessage] = useState(null)
 
   const isOther = preset === GALLERY_OTHER_LABEL
-  const atLimit = photos.length >= GALLERY_MAX_PHOTOS
 
   const showMsg = (text, isError = false) => {
     setMessage({ text, isError })
@@ -34,13 +33,6 @@ export default function PanelGaleria() {
   }
 
   const onPickFile = () => {
-    if (atLimit) {
-      showMsg(
-        `Limite de ${GALLERY_MAX_PHOTOS} fotos no site. Remova uma foto antes de enviar outra.`,
-        true
-      )
-      return
-    }
     try {
       resolveUploadCategory(preset, customCategory)
     } catch (err) {
@@ -101,7 +93,7 @@ export default function PanelGaleria() {
           <Link to="/galeria" className="text-rose-gold hover:underline">
             Galeria
           </Link>
-          . Máximo de {GALLERY_MAX_PHOTOS} fotos no site.
+          . No site, aparecem {GALLERY_PAGE_SIZE} por vez; se tiver mais, a cliente vê página 2, 3…
         </p>
       </div>
 
@@ -178,23 +170,13 @@ export default function PanelGaleria() {
           onChange={onFileChange}
         />
 
-        {atLimit && (
-          <p className="text-xs text-amber-800 bg-amber-50 rounded-xl px-4 py-3 text-center">
-            {GALLERY_MAX_PHOTOS} de {GALLERY_MAX_PHOTOS} fotos no site. Remova uma para enviar outra.
-          </p>
-        )}
-
         <button
           type="button"
-          disabled={uploading || atLimit}
+          disabled={uploading}
           onClick={onPickFile}
           className="w-full py-4 rounded-2xl border-2 border-dashed border-gold/30 text-sm font-semibold text-charcoal hover:border-rose-gold/50 hover:bg-rose-gold-light/30 transition-colors disabled:opacity-50"
         >
-          {uploading
-            ? 'Enviando...'
-            : atLimit
-              ? 'Limite de fotos atingido'
-              : 'Escolher foto do celular ou computador'}
+          {uploading ? 'Enviando...' : 'Escolher foto do celular ou computador'}
         </button>
         <p className="text-[10px] text-warm-gray-light text-center">
           JPG, PNG ou WebP — a imagem é ajustada automaticamente antes de subir.
@@ -203,7 +185,7 @@ export default function PanelGaleria() {
 
       <div className="space-y-3">
         <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em]">
-          Suas fotos ({photos.length}/{GALLERY_MAX_PHOTOS})
+          Suas fotos ({photos.length})
         </p>
 
         {loading ? (
