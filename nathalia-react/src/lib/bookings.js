@@ -69,6 +69,17 @@ export async function createBooking(booking) {
   return fromRow(data)
 }
 
+export async function deleteBooking(id) {
+  if (!isSupabaseConfigured) {
+    const list = loadLocal().filter((b) => b.id !== id)
+    saveLocal(list)
+    return
+  }
+
+  const { error } = await supabase.from(TABLE).delete().eq('id', id)
+  if (error) throw error
+}
+
 export function subscribeBookings(onChange) {
   if (!isSupabaseConfigured) return () => {}
 

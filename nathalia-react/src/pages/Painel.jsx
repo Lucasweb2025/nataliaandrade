@@ -1,25 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import ScrollReveal from '../components/ScrollReveal'
-
+import { useAuth } from '../context/AuthContext'
 import { LOGO_URL, HOURS_LABEL, SERVICES } from '../lib/constants'
-import { fetchBookings, subscribeBookings } from '../lib/bookings'
-import { isSupabaseConfigured } from '../lib/supabase'
+import { fetchBookings, subscribeBookings, deleteBooking } from '../lib/bookings'
+import { dateKey, formatDateKeyLabel, nextDaysKeys, parseDateKey } from '../lib/dates'
 
-const SERVICES_PANEL = [
-  { category: 'Cabelo', titles: ['Progressiva', 'Botox Capilar', 'Selagem Térmica', 'Reconstrução Capilar', 'Hidratação'] },
-  { category: 'Mãos e Pés', titles: ['Mão', 'Pé', 'Pé e Mão'] },
-  { category: 'Outros', titles: ['Corte Masculino', 'Sobrancelha Design', 'Sobrancelha com Henna'] },
-]
-
-function servicePrice(title) {
-  return SERVICES.find((s) => s.title === title)?.price ?? ''
-}
-
-function dateKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
+const AGENDA_PUBLIC_URL = `${window.location.origin}${import.meta.env.BASE_URL}#/agenda`
 
 function whatsappLink(phone, name, service, date, time) {
   const digits = phone.replace(/\D/g, '')
@@ -29,241 +16,296 @@ function whatsappLink(phone, name, service, date, time) {
 
 const stagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.06 } },
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
+}
+
+function BookingCard({ booking, onCancel, cancelling }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="card-luxury rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+    >
+      <div className="flex items-center gap-5 min-w-0">
+        <div className="text-center border-r border-gold/10 pr-5 shrink-0">
+          <p className="text-sm font-bold text-charcoal">{booking.time}</p>
+          <p className="text-[10px] text-warm-gray">{formatDateKeyLabel(booking.date)}</p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-charcoal truncate">{booking.name}</p>
+          <p className="text-[11px] text-rose-gold font-medium truncate">{booking.service}</p>
+          {booking.phone && <p className="text-[10px] text-warm-gray mt-0.5">{booking.phone}</p>}
+        </div>
+      </div>
+      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center flex-wrap justify-end">
+        {booking.phone && (
+          <a
+            href={whatsappLink(booking.phone, booking.name, booking.service, booking.date, booking.time)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-2 rounded-full hover:bg-emerald-100 transition-colors"
+          >
+            WhatsApp
+          </a>
+        )}
+        <button
+          type="button"
+          disabled={cancelling}
+          onClick={() => onCancel(booking)}
+          className="text-[10px] font-bold uppercase tracking-wider text-warm-gray border border-gold/20 px-3 py-2 rounded-full hover:border-rose-gold hover:text-rose-gold-dark transition-colors disabled:opacity-50"
+        >
+          Cancelar
+        </button>
+      </div>
+    </motion.div>
+  )
 }
 
 export default function Painel() {
+  const { user, signOut } = useAuth()
   const [bookings, setBookings] = useState([])
+  const [view, setView] = useState('hoje')
+  const [cancellingId, setCancellingId] = useState(null)
+  const [copyOk, setCopyOk] = useState(false)
 
   useEffect(() => {
     fetchBookings().then(setBookings).catch(() => setBookings([]))
-    const unsub = subscribeBookings(setBookings)
-    const interval = isSupabaseConfigured ? null : setInterval(() => {
-      fetchBookings().then(setBookings).catch(() => {})
-    }, 5000)
-    return () => {
-      unsub()
-      if (interval) clearInterval(interval)
-    }
+    return subscribeBookings(setBookings)
   }, [])
 
   const today = dateKey(new Date())
-  const todayList = bookings
-    .filter(b => b.date === today)
-    .sort((a, b) => a.time.localeCompare(b.time))
+  const weekKeys = useMemo(() => nextDaysKeys(new Date(), 7), [])
+
+  const todayList = useMemo(
+    () => bookings.filter((b) => b.date === today).sort((a, b) => a.time.localeCompare(b.time)),
+    [bookings, today]
+  )
+
+  const weekList = useMemo(
+    () =>
+      bookings
+        .filter((b) => weekKeys.includes(b.date))
+        .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)),
+    [bookings, weekKeys]
+  )
+
+  const weekGrouped = useMemo(() => {
+    const map = {}
+    weekKeys.forEach((k) => { map[k] = [] })
+    weekList.forEach((b) => { map[b.date].push(b) })
+    return weekKeys.map((k) => ({ date: k, items: map[k] }))
+  }, [weekKeys, weekList])
+
+  const topService = useMemo(() => {
+    const counts = {}
+    bookings.forEach((b) => {
+      counts[b.service] = (counts[b.service] || 0) + 1
+    })
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
+    return sorted[0] ? { name: sorted[0][0], count: sorted[0][1] } : null
+  }, [bookings])
+
+  const nextBooking = useMemo(() => {
+    const now = new Date()
+    const upcoming = bookings
+      .map((b) => ({ ...b, dt: parseDateKey(b.date) }))
+      .filter((b) => {
+        const slot = new Date(b.dt)
+        const [h, m] = b.time.split(':').map(Number)
+        slot.setHours(h, m, 0, 0)
+        return slot >= now
+      })
+      .sort((a, b) => {
+        const da = a.date.localeCompare(b.date)
+        return da !== 0 ? da : a.time.localeCompare(b.time)
+      })
+    return upcoming[0] || null
+  }, [bookings])
+
+  const handleCancel = async (booking) => {
+    if (!confirm(`Cancelar agendamento de ${booking.name} (${booking.date} as ${booking.time})?`)) return
+    setCancellingId(booking.id)
+    try {
+      await deleteBooking(booking.id)
+      setBookings(await fetchBookings())
+    } catch {
+      alert('Nao foi possivel cancelar. Confira se rodou o SQL de autenticacao no Supabase.')
+    } finally {
+      setCancellingId(null)
+    }
+  }
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(AGENDA_PUBLIC_URL)
+      setCopyOk(true)
+      setTimeout(() => setCopyOk(false), 2500)
+    } catch {
+      prompt('Copie o link:', AGENDA_PUBLIC_URL)
+    }
+  }
+
+  const list = view === 'hoje' ? todayList : weekList
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row marble-bg">
-      {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-72 bg-white border-r border-gold/10 flex-col justify-between p-8 shrink-0">
         <div>
-          <div className="mb-10">
-            <img src={LOGO_URL} alt="Nathalia Andrade" className="w-full max-w-[180px] h-auto mix-blend-multiply" />
-          </div>
+          <img src={LOGO_URL} alt="" className="w-full max-w-[160px] h-auto mb-8" />
           <nav className="space-y-1.5">
-            <Link
-              to="/painel"
-              className="flex items-center gap-3 px-5 py-3 rounded-full text-xs font-semibold btn-luxury"
-            >
-              <span className="opacity-70">01.</span> Painel
-            </Link>
+            {[
+              { id: 'hoje', label: 'Hoje' },
+              { id: 'semana', label: 'Proximos 7 dias' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setView(item.id)}
+                className={`w-full text-left flex items-center gap-3 px-5 py-3 rounded-full text-xs font-semibold transition-colors ${
+                  view === item.id ? 'btn-luxury' : 'text-warm-gray hover:bg-marble-warm'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
             <Link
               to="/agenda"
               className="flex items-center gap-3 px-5 py-3 rounded-full text-xs font-medium text-warm-gray hover:bg-marble-warm transition-colors"
             >
-              <span className="opacity-40">02.</span> Agenda / Agendar
+              Agenda publica
             </Link>
           </nav>
         </div>
-        <div className="pt-6 border-t border-gold/10">
-          <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-1.5">Atelie de Beleza</p>
-          <p className="text-[11px] font-medium text-charcoal leading-relaxed">
-            Rua Julio Frank, 111 A<br />
-            <span className="text-warm-gray">Parque Arariba, SP</span>
-          </p>
+        <div className="space-y-3 pt-6 border-t border-gold/10">
+          <p className="text-[10px] text-warm-gray truncate">{user?.email}</p>
+          <button
+            type="button"
+            onClick={signOut}
+            className="w-full py-2.5 rounded-full border border-gold/25 text-[10px] font-bold uppercase tracking-wider text-warm-gray hover:text-charcoal transition-colors"
+          >
+            Sair
+          </button>
         </div>
       </aside>
 
-      {/* Mobile header */}
-      <header className="lg:hidden bg-white/80 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-30">
-        <div className="px-5 py-4 flex items-center justify-between gap-3">
-          <Link to="/agenda" className="shrink-0 btn-luxury px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider">
-            Agendar
-          </Link>
-          <img src={LOGO_URL} alt="Nathalia Andrade" className="h-14 sm:h-16 w-auto object-contain" />
-          <span className="w-[72px] shrink-0" />
-        </div>
-        <nav className="flex gap-2 px-5 pb-3 overflow-x-auto">
-          <Link to="/painel" className="shrink-0 px-4 py-2 rounded-full text-xs font-semibold btn-luxury">
-            Painel
-          </Link>
-          <Link to="/agenda" className="shrink-0 px-4 py-2 rounded-full text-xs font-medium text-warm-gray bg-marble-warm">
-            Agenda
-          </Link>
-        </nav>
-      </header>
-
       <div className="flex-1 flex flex-col min-w-0 safe-bottom lg:pb-0">
-        {/* Desktop header */}
-        <header className="hidden lg:flex bg-white/80 backdrop-blur-xl border-b border-gold/10 py-5 px-8 items-center justify-between sticky top-0 z-10">
-          <div>
-            <span className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.2em]">Painel da Nathalia</span>
-            <h1 className="text-lg font-semibold text-charcoal tracking-wide">Dashboard de Atendimento</h1>
+        <header className="bg-white/80 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-20">
+          <div className="px-5 sm:px-8 py-4 flex items-center justify-between gap-3">
+            <div className="lg:hidden">
+              <img src={LOGO_URL} alt="" className="h-12 w-auto" />
+            </div>
+            <div className="hidden lg:block">
+              <span className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.2em]">Dashboard</span>
+              <h1 className="text-lg font-semibold text-charcoal">Painel do salao</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={copyLink} className="btn-outline-gold px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                {copyOk ? 'Copiado' : 'Link clientes'}
+              </button>
+              <button type="button" onClick={signOut} className="lg:hidden text-[10px] font-bold uppercase text-warm-gray px-3 py-2">
+                Sair
+              </button>
+            </div>
           </div>
-          <Link to="/agenda" className="btn-luxury px-6 py-2.5 rounded-full text-[11px] font-bold tracking-[0.15em] uppercase">
-            Agendar
-          </Link>
+          <div className="lg:hidden flex gap-2 px-5 pb-3 overflow-x-auto">
+            {['hoje', 'semana'].map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold ${
+                  view === v ? 'btn-luxury' : 'bg-marble-warm text-warm-gray'
+                }`}
+              >
+                {v === 'hoje' ? 'Hoje' : 'Semana'}
+              </button>
+            ))}
+          </div>
         </header>
 
-        <main className="p-5 sm:p-6 md:p-10 max-w-6xl w-full mx-auto space-y-6 sm:space-y-8">
-          <div className="lg:hidden">
-            <span className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.2em]">Painel</span>
-            <h1 className="text-lg font-semibold text-charcoal">Agendamentos de hoje</h1>
-          </div>
-
-          {/* Stats cards */}
+        <main className="p-5 sm:p-8 max-w-6xl w-full mx-auto space-y-6">
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
             variants={stagger}
             initial="hidden"
             animate="show"
           >
-            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">
-              <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-3">Agendamentos hoje</p>
-              <p className="text-2xl font-light text-charcoal">
-                {todayList.length} <span className="text-sm text-warm-gray-light">Hoje</span>
-              </p>
-              <p className="text-[10px] text-warm-gray mt-2">
-              {isSupabaseConfigured ? 'Nuvem — tempo real' : 'Atualizado a cada 5s'}
-            </p>
+            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-5 col-span-1">
+              <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">Hoje</p>
+              <p className="text-2xl font-light text-charcoal">{todayList.length}</p>
             </motion.div>
-
-            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">
-              <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-3">Link para clientes</p>
-              <Link to="/agenda" className="text-sm font-semibold text-rose-gold hover:text-rose-gold-dark transition-colors">
-                Abrir pagina de agendamento
-              </Link>
-              <p className="text-[10px] text-warm-gray mt-2">Envie este link no WhatsApp</p>
+            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-5 col-span-1">
+              <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">7 dias</p>
+              <p className="text-2xl font-light text-charcoal">{weekList.length}</p>
             </motion.div>
-
-            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6 sm:col-span-2 lg:col-span-1">
-              <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-3">Horario de funcionamento</p>
-              <p className="text-sm font-medium text-charcoal">Terça a Sábado</p>
-              <p className="text-sm text-warm-gray">9h às 19h</p>
+            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-5 col-span-2 lg:col-span-1">
+              <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">Mais pedido</p>
+              <p className="text-sm font-semibold text-charcoal truncate">{topService?.name || '—'}</p>
+              {topService && <p className="text-[10px] text-warm-gray">{topService.count} agend.</p>}
+            </motion.div>
+            <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-5 col-span-2 lg:col-span-1">
+              <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">Proximo</p>
+              {nextBooking ? (
+                <>
+                  <p className="text-sm font-semibold text-charcoal">{nextBooking.name}</p>
+                  <p className="text-[10px] text-rose-gold">{formatDateKeyLabel(nextBooking.date)} as {nextBooking.time}</p>
+                </>
+              ) : (
+                <p className="text-sm text-warm-gray">Nenhum</p>
+              )}
             </motion.div>
           </motion.div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
-            {/* Today's appointments */}
-            <div className="xl:col-span-2 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                <h2 className="font-serif text-xl text-charcoal tracking-wide">Agenda de Hoje</h2>
-                <Link to="/agenda" className="text-[11px] font-semibold text-rose-gold uppercase border-b border-rose-gold/30 hover:border-rose-gold self-start transition-colors">
-                  Abrir calendario completo
-                </Link>
+          <section className="space-y-4">
+            <h2 className="font-serif text-xl text-charcoal tracking-wide">
+              {view === 'hoje' ? 'Agenda de hoje' : 'Proximos 7 dias'}
+            </h2>
+
+            {list.length === 0 ? (
+              <div className="card-luxury rounded-2xl p-8 text-center text-sm text-warm-gray">
+                Nenhum agendamento neste periodo.
               </div>
-
-              {todayList.length === 0 ? (
-                <div className="card-luxury rounded-2xl p-8 text-center">
-                  <p className="text-sm text-warm-gray mb-3">Nenhum agendamento hoje.</p>
-                  <Link to="/agenda" className="text-rose-gold font-semibold text-sm hover:text-rose-gold-dark transition-colors">
-                    Compartilhar link de agendamento
-                  </Link>
-                </div>
-              ) : (
-                <motion.div className="space-y-3" variants={stagger} initial="hidden" animate="show">
-                  {todayList.map(b => (
-                    <motion.div
-                      key={b.id}
-                      variants={fadeUp}
-                      className="card-luxury rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-5 min-w-0">
-                        <div className="text-center border-r border-gold/10 pr-5 shrink-0">
-                          <p className="text-sm font-bold text-charcoal">{b.time}</p>
-                          <p className="text-[10px] text-warm-gray font-medium">
-                            {parseInt(b.time) >= 12 ? 'PM' : 'AM'}
-                          </p>
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-charcoal truncate">{b.name}</p>
-                          <p className="text-[11px] text-rose-gold font-medium truncate">{b.service}</p>
-                          {b.phone && <p className="text-[10px] text-warm-gray mt-0.5">{b.phone}</p>}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                        <span className="w-2 h-2 rounded-full bg-rose-gold" />
-                        {b.phone && (
-                          <a
-                            href={whatsappLink(b.phone, b.name, b.service, b.date, b.time)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-2 rounded-full hover:bg-emerald-100 transition-colors"
-                          >
-                            WhatsApp
-                          </a>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </div>
-
-            {/* Services sidebar */}
-            <ScrollReveal>
-              <div className="marble-dark rounded-2xl p-7 text-white border border-gold/10">
-                <h2 className="font-serif text-xl sm:text-2xl mb-6 tracking-wide">
-                  Servicos <span className="text-rose-gold italic">Signature</span>
-                </h2>
-                <div className="space-y-6 text-[11px] font-light tracking-wide">
-                  {SERVICES_PANEL.map((cat) => (
-                    <div key={cat.category}>
-                      <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-[0.3em] mb-3">{cat.category}</p>
-                      <ul className="space-y-2.5">
-                        {cat.titles.map((title) => (
-                          <li key={title} className="flex justify-between gap-2 border-b border-white/5 pb-2.5">
-                            <span>{title}</span>
-                            <span className="text-rose-gold shrink-0 text-[10px]">{servicePrice(title)}</span>
-                          </li>
+            ) : view === 'hoje' ? (
+              <motion.div className="space-y-3" variants={stagger} initial="hidden" animate="show">
+                {todayList.map((b) => (
+                  <BookingCard key={b.id} booking={b} onCancel={handleCancel} cancelling={cancellingId === b.id} />
+                ))}
+              </motion.div>
+            ) : (
+              <div className="space-y-6">
+                {weekGrouped.map(({ date, items }) =>
+                  items.length > 0 ? (
+                    <div key={date}>
+                      <p className="text-[10px] font-bold text-rose-gold uppercase tracking-wider mb-3">
+                        {formatDateKeyLabel(date)}
+                        {date === today && ' (hoje)'}
+                      </p>
+                      <motion.div className="space-y-3" variants={stagger} initial="hidden" animate="show">
+                        {items.map((b) => (
+                          <BookingCard key={b.id} booking={b} onCancel={handleCancel} cancelling={cancellingId === b.id} />
                         ))}
-                      </ul>
+                      </motion.div>
                     </div>
-                  ))}
-                </div>
-                <p className="mt-8 text-[10px] text-center text-warm-gray italic font-serif tracking-wider">
-                  Realcando sua beleza natural com excelencia.
-                </p>
+                  ) : null
+                )}
+                {weekList.length === 0 && (
+                  <p className="text-sm text-warm-gray text-center py-6">Sem agendamentos na semana.</p>
+                )}
               </div>
-            </ScrollReveal>
-          </div>
+            )}
+          </section>
 
-          {/* Location mobile */}
-          <section className="lg:hidden card-luxury rounded-2xl p-6">
-            <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-2">Localizacao</p>
-            <p className="text-sm font-semibold text-charcoal">Rua Julio Frank, 111 A</p>
-            <p className="text-sm text-warm-gray">Parque Arariba, SP</p>
+          <section className="card-luxury rounded-2xl p-6">
+            <p className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.2em] mb-2">Funcionamento</p>
+            <p className="text-sm text-charcoal">{HOURS_LABEL}</p>
+            <p className="text-[10px] text-warm-gray mt-3">Atualizacao em tempo real via Supabase</p>
           </section>
         </main>
       </div>
-
-      {/* Bottom nav mobile */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-xl border-t border-gold/10 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around">
-        <Link to="/painel" className="flex flex-col items-center gap-1 px-3 py-2 text-rose-gold min-w-0">
-          <span className="text-[9px] font-semibold uppercase tracking-wider">Painel</span>
-        </Link>
-        <Link to="/agenda" className="flex flex-col items-center gap-1 px-3 py-2 text-warm-gray min-w-0">
-          <span className="text-[9px] font-semibold uppercase tracking-wider">Agendar</span>
-        </Link>
-        <Link to="/agenda" className="flex flex-col items-center gap-1 py-2 btn-luxury rounded-xl px-4 min-w-0 text-white">
-          <span className="text-[9px] font-semibold uppercase tracking-wider">Novo</span>
-        </Link>
-      </nav>
     </div>
   )
 }
