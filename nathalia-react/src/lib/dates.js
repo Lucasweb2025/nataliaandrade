@@ -15,6 +15,14 @@ export function formatDateKeyLabel(key) {
   })
 }
 
+export function formatDateKeyLong(key) {
+  return parseDateKey(key).toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
 export function addDays(date, days) {
   const d = new Date(date)
   d.setDate(d.getDate() + days)

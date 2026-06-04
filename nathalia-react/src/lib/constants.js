@@ -68,6 +68,9 @@ export const SERVICES = [
 
 export const BOOKING_SERVICES = SERVICES.map((s) => s.title)
 
+/** Marca horários bloqueados no painel (ocupam a agenda pública) */
+export const BLOCKED_SERVICE = 'Horário bloqueado'
+
 export const SLOT_TIMES = [
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
   '12:00', '13:00', '13:30', '14:00', '14:30', '15:00',
