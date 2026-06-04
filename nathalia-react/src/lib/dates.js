@@ -36,3 +36,15 @@ export function nextDaysKeys(fromDate, count) {
   }
   return keys
 }
+
+export function pastDaysKeys(fromDate, count) {
+  const keys = []
+  for (let i = 1; i <= count; i++) {
+    keys.push(dateKey(addDays(fromDate, -i)))
+  }
+  return keys
+}
+
+export function isPastDateKey(key) {
+  return key < dateKey(new Date())
+}
