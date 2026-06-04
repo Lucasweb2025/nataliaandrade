@@ -3,6 +3,11 @@ import { STATIC_GALLERY_IMAGES } from './constants'
 import { normalizeCategoryLabel, defaultAltForCategory } from './galleryCategories'
 
 export const GALLERY_BUCKET = 'galeria'
+/** Máximo de fotos na galeria do site (nuvem) */
+export const GALLERY_MAX_PHOTOS = 12
+/** Fotos por página na galeria pública */
+export const GALLERY_PAGE_SIZE = 12
+
 const TABLE = 'galeria_fotos'
 const MAX_INPUT_BYTES = 12 * 1024 * 1024
 const MAX_EDGE = 1600
@@ -105,6 +110,13 @@ export async function uploadGalleryPhoto(file, { category, alt }) {
   const { data: sessionData } = await supabase.auth.getSession()
   if (!sessionData.session) {
     throw new Error('Faça login no painel para enviar fotos.')
+  }
+
+  const current = await fetchCloudGalleryPhotos()
+  if (current.length >= GALLERY_MAX_PHOTOS) {
+    throw new Error(
+      `Limite de ${GALLERY_MAX_PHOTOS} fotos no site. Remova uma foto antes de enviar outra.`
+    )
   }
 
   const label = normalizeCategoryLabel(category)
