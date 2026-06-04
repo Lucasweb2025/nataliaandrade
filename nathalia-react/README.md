@@ -1,16 +1,115 @@
-# React + Vite
+# Nathalia Andrade — Salão de Beleza
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Site e sistema de agendamento online para o salão em Parque Arariba, SP.
 
-Currently, two official plugins are available:
+**Site publicado:** https://lucasweb2025.github.io/nataliaandrade/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Funcionalidades
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Site público
+- Landing page (início, serviços, galeria, sobre, local)
+- Agenda online com calendário e horários em tempo real
+- PWA (instalável no celular)
+- Botão WhatsApp
+- Instagram: [@nathaliaestrela1235](https://www.instagram.com/nathaliaestrela1235/)
 
-## Expanding the ESLint configuration
+### Painel (login)
+- Autenticação Supabase (e-mail + senha)
+- Agenda de hoje e próximos 7 dias
+- Histórico (30 dias)
+- Resumo financeiro estimado + gráfico de serviços
+- Agendar manualmente e bloquear horários
+- Confirmar cliente via WhatsApp
+- Busca e filtro por serviço
+- Exportar lista da semana
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Rotas
+
+| Rota | Descrição |
+|------|-----------|
+| `#/` | Início |
+| `#/servicos` | Serviços e preços |
+| `#/galeria` | Fotos dos trabalhos |
+| `#/sobre` | Sobre o salão |
+| `#/local` | Endereço e mapa |
+| `#/agenda` | Agendamento (clientes) |
+| `#/login` | Login do painel |
+| `#/painel` | Dashboard (protegido) |
+
+---
+
+## Stack
+
+- React 19 + Vite
+- Tailwind CSS v4
+- Framer Motion
+- React Router (HashRouter — GitHub Pages)
+- Supabase (agendamentos + auth)
+
+---
+
+## Desenvolvimento local
+
+```bash
+cd nathalia-react
+npm install
+cp .env.example .env.local   # preencher chaves Supabase
+npm run dev
+```
+
+Abre em `http://localhost:5173/nataliaandrade/`
+
+### Variáveis de ambiente (`.env.local`)
+
+```env
+VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+VITE_SUPABASE_ANON_KEY=sua-chave-anon-ou-publishable
+```
+
+Nunca commitar `.env.local`.
+
+---
+
+## Build e deploy (GitHub Pages)
+
+```bash
+npm run build
+```
+
+Copiar conteúdo de `dist/` para a raiz do repositório (`index.html`, `assets/`, `gallery/`, etc.) e fazer push na branch `main`.
+
+O `vite.config.js` usa `base: '/nataliaandrade/'`. Ao usar **domínio customizado**, alterar para `base: '/'` e reconfigurar DNS no GitHub Pages.
+
+---
+
+## Supabase
+
+1. Executar `supabase/schema.sql` — tabela `agendamentos` + RLS leitura/inserção pública
+2. Executar `supabase/schema-auth.sql` — políticas de update/delete para usuários autenticados (painel)
+3. **Authentication → Users** — criar usuário da profissional
+4. Habilitar provider **Email**
+
+---
+
+## Estrutura principal
+
+```
+src/
+  pages/       Home, Servicos, Galeria, Sobre, Local, Agenda, Login, Painel
+  components/  Navbar, Footer, Gallery, PanelScheduleForm, ...
+  lib/         constants, bookings, supabase, dates, pricing, schedule
+  context/     AuthContext
+public/
+  gallery/     Fotos dos trabalhos
+  logo.png, proprietaria.jpg, sw.js, manifest.json
+```
+
+---
+
+## Créditos
+
+Desenvolvido por [Lucasweb](https://www.instagram.com/lucasdmxx/)
