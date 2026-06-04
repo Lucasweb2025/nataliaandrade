@@ -1,6 +1,6 @@
 import PageShell from '../components/PageShell'
 import ScrollReveal from '../components/ScrollReveal'
-import { LOGO_URL, waLink } from '../lib/constants'
+import { OWNER_PHOTO_URL, waLink } from '../lib/constants'
 
 const FEATURES = [
   { num: '01', title: 'Atendimento personalizado', desc: 'Cada cliente recebe uma consultoria para encontrar o melhor tratamento.' },
@@ -27,42 +27,60 @@ export default function Sobre() {
     >
       <section className="py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-16 sm:mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-16 sm:mb-20">
             <ScrollReveal>
-              <div className="marble-dark rounded-[2rem] p-10 sm:p-14 text-white relative overflow-hidden border border-gold/10">
-                <img
-                  src={LOGO_URL}
-                  alt=""
-                  aria-hidden
-                  className="absolute right-4 bottom-4 w-32 opacity-[0.06] pointer-events-none"
-                />
-                <h2 className="font-serif text-2xl sm:text-3xl mb-6 leading-tight tracking-wide relative z-10">
-                  Nathalia Andrade
-                </h2>
-                <p className="text-sm text-warm-gray-light leading-relaxed mb-5 relative z-10">
-                  Especialista em tratamentos capilares e estética em Parque Arariba.
-                  Cada atendimento é personalizado, com produtos de alta qualidade e foco no que
-                  funciona para o seu tipo de cabelo.
-                </p>
-                <p className="text-sm text-warm-gray-light leading-relaxed relative z-10">
-                  Você merece um cuidado especial — da consulta ao resultado final.
-                </p>
-              </div>
+              <figure className="relative max-w-sm mx-auto lg:mx-0">
+                <div className="rounded-[2rem] overflow-hidden border border-gold/20 shadow-[0_24px_60px_-12px_rgba(61,43,31,0.18)] aspect-[3/4] bg-marble">
+                  <img
+                    src={OWNER_PHOTO_URL}
+                    alt="Nathalia Andrade — cabeleireira profissional"
+                    className="w-full h-full object-cover object-[center_15%]"
+                    loading="eager"
+                  />
+                </div>
+                <figcaption className="mt-5 text-center lg:text-left">
+                  <p className="font-serif text-lg text-charcoal tracking-wide">Nathalia Andrade</p>
+                  <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.3em] mt-1">
+                    Cabeleireira profissional
+                  </p>
+                  <p className="font-serif text-sm text-warm-gray italic mt-3 leading-relaxed">
+                    Apaixonada por realçar a sua melhor versão
+                  </p>
+                </figcaption>
+              </figure>
             </ScrollReveal>
-            <div className="space-y-8">
-              {FEATURES.map((f, i) => (
-                <ScrollReveal key={f.num} delay={i * 0.1}>
-                  <div className="flex gap-6 items-start">
-                    <span className="font-serif text-3xl font-semibold text-gold/30 shrink-0 leading-none mt-1">
-                      {f.num}
-                    </span>
-                    <div>
-                      <h3 className="font-semibold text-charcoal mb-1.5 tracking-wide">{f.title}</h3>
-                      <p className="text-sm text-warm-gray leading-relaxed">{f.desc}</p>
+
+            <div>
+              <ScrollReveal>
+                <div className="marble-dark rounded-[2rem] p-8 sm:p-10 text-white border border-gold/10 mb-10">
+                  <h2 className="font-serif text-2xl sm:text-3xl mb-5 leading-tight tracking-wide">
+                    Nathalia Andrade
+                  </h2>
+                  <p className="text-sm text-warm-gray-light leading-relaxed mb-4">
+                    Especialista em tratamentos capilares e estética em Parque Arariba.
+                    Cada atendimento é personalizado, com produtos de alta qualidade e foco no que
+                    funciona para o seu tipo de cabelo.
+                  </p>
+                  <p className="text-sm text-warm-gray-light leading-relaxed">
+                    Você merece um cuidado especial — da consulta ao resultado final.
+                  </p>
+                </div>
+              </ScrollReveal>
+              <div className="space-y-8">
+                {FEATURES.map((f, i) => (
+                  <ScrollReveal key={f.num} delay={i * 0.1}>
+                    <div className="flex gap-6 items-start">
+                      <span className="font-serif text-3xl font-semibold text-gold/30 shrink-0 leading-none mt-1">
+                        {f.num}
+                      </span>
+                      <div>
+                        <h3 className="font-semibold text-charcoal mb-1.5 tracking-wide">{f.title}</h3>
+                        <p className="text-sm text-warm-gray leading-relaxed">{f.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                </ScrollReveal>
-              ))}
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
           </div>
 
