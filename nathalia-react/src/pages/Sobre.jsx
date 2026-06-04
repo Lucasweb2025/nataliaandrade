@@ -57,7 +57,7 @@ export default function Sobre() {
                     Nathalia Andrade
                   </h2>
                   <p className="text-sm text-warm-gray-light leading-relaxed mb-4">
-                    Especialista em tratamentos capilares e estética em Parque Arariba.
+                    Especialista em cabelo, unhas e sobrancelhas em Parque Arariba.
                     Cada atendimento é personalizado, com produtos de alta qualidade e foco no que
                     funciona para o seu tipo de cabelo.
                   </p>

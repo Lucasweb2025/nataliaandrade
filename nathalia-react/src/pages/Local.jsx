@@ -14,7 +14,7 @@ export default function Local() {
   return (
     <PageShell
       eyebrow="Localização"
-      title="Ateliê de Beleza"
+      title="Salão de Beleza"
       subtitle={ADDRESS}
       heroExtra={
         <a

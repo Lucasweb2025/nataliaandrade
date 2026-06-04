@@ -17,7 +17,7 @@ const STEPS = [
 
 const TEASERS = {
   '/servicos': 'Tratamentos capilares, unhas, sobrancelhas e mais.',
-  '/galeria': 'Conheça o ambiente do ateliê de beleza.',
+  '/galeria': 'Conheça o ambiente do salão.',
   '/sobre': 'História, valores e o cuidado em cada atendimento.',
   '/local': 'Endereço, horários e como chegar.',
 }
@@ -65,7 +65,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Especialista em tratamentos capilares e estética.
+            Especialista em cabelo, unhas e sobrancelhas.
             Atendimento personalizado em um ambiente acolhedor.
           </motion.p>
 

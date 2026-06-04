@@ -20,7 +20,7 @@ export default function Servicos() {
       eyebrow="Nossos serviços"
       title={
         <>
-          Tratamentos <span className="text-rose-gold italic">Signature</span>
+          Salão de <span className="text-rose-gold italic">beleza</span>
         </>
       }
       subtitle='Valores "a partir de" podem variar conforme comprimento e tipo de cabelo. Toque em Agendar para escolher data e horário.'
