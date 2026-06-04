@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const LINKS = [
   { href: '/#servicos', label: 'Serviços' },
+  { href: '/#galeria', label: 'Galeria' },
   { href: '/#sobre', label: 'Sobre' },
   { href: '/#localizacao', label: 'Local' },
   { href: '/agenda', label: 'Agendar', primary: true },

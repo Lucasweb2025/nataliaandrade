@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, waLink } from '../lib/constants'
+import { PHONE_DISPLAY, ADDRESS, HOURS_LABEL, INSTAGRAM_URL, waLink } from '../lib/constants'
 
 export default function Footer() {
   return (
@@ -16,8 +16,14 @@ export default function Footer() {
             <p>{HOURS_LABEL}</p>
             <nav className="flex flex-wrap justify-center sm:justify-start gap-4 pt-2">
               <a href="/#servicos" className="hover:text-rose-gold transition-colors">Serviços</a>
+              <a href="/#galeria" className="hover:text-rose-gold transition-colors">Galeria</a>
               <Link to="/agenda" className="hover:text-rose-gold transition-colors">Agendar</Link>
               <a href="/#localizacao" className="hover:text-rose-gold transition-colors">Local</a>
+              {INSTAGRAM_URL ? (
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-rose-gold transition-colors">
+                  Instagram
+                </a>
+              ) : null}
             </nav>
           </div>
           <div className="flex flex-col items-center sm:items-end gap-2">

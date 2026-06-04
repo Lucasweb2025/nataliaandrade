@@ -3,6 +3,9 @@ import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ScrollReveal from '../components/ScrollReveal'
+import Gallery from '../components/Gallery'
+import Testimonials from '../components/Testimonials'
+import LocationMap from '../components/LocationMap'
 import { LOGO_URL, SERVICES, waLink, ADDRESS, MAPS_URL, HOURS_LABEL } from '../lib/constants'
 
 const WA_URL = waLink('Olá! Gostaria de saber mais sobre os serviços.')
@@ -130,6 +133,9 @@ export default function Home() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-charcoal tracking-wide">
               Tratamentos <span className="text-rose-gold italic">Signature</span>
             </h2>
+            <p className="text-xs text-warm-gray-light mt-4 max-w-md mx-auto">
+              Valores &quot;a partir de&quot; podem variar conforme comprimento e tipo de cabelo.
+            </p>
           </ScrollReveal>
 
           <motion.div
@@ -200,6 +206,9 @@ export default function Home() {
         </div>
       </section>
 
+      <Gallery />
+      <div className="gold-separator" />
+      <Testimonials />
       <div className="gold-separator" />
 
       <section id="localizacao" className="py-20 sm:py-28 scroll-mt-24">
@@ -239,6 +248,7 @@ export default function Home() {
               </div>
             </ScrollReveal>
           </div>
+          <LocationMap />
         </div>
       </section>
 

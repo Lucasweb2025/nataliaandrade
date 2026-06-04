@@ -3,7 +3,32 @@ export const PHONE_DISPLAY = '(11) 98427-0908'
 export const PHONE_WA = '5511984270908'
 export const ADDRESS = 'Rua Julio Frank, 111 A — Parque Arariba, SP'
 export const MAPS_URL = 'https://www.google.com/maps/search/Rua+Julio+Frank+111+A+Parque+Arariba+SP'
+export const MAPS_EMBED_URL =
+  'https://maps.google.com/maps?q=Rua+Julio+Frank+111+A+Parque+Arariba+SP&hl=pt-BR&z=16&output=embed'
 export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
+
+/** Cole aqui o link do Instagram da Nathalia (ex: https://instagram.com/nathaliaandrade) */
+export const INSTAGRAM_URL = ''
+
+/**
+ * Fotos do salão: coloque arquivos em public/gallery/ e liste abaixo.
+ * Exemplo: { src: `${import.meta.env.BASE_URL}gallery/salao-1.jpg`, alt: 'Interior do salão' }
+ */
+export const GALLERY_IMAGES = []
+
+/** Troque pelos depoimentos reais das clientes (com autorização) */
+export const TESTIMONIALS = [
+  {
+    name: 'Mariana S.',
+    service: 'Progressiva',
+    text: 'Atendimento impecável e resultado lindo. Super recomendo!',
+  },
+  {
+    name: 'Juliana R.',
+    service: 'Sobrancelha Design',
+    text: 'Ambiente acolhedor e profissional. Voltarei com certeza.',
+  },
+]
 
 export function waLink(text) {
   return `https://wa.me/${PHONE_WA}?text=${encodeURIComponent(text)}`

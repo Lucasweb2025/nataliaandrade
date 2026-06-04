@@ -5,6 +5,7 @@ import MobileNav from './MobileNav'
 
 const NAV_LINKS = [
   { href: '/#servicos', label: 'Serviços' },
+  { href: '/#galeria', label: 'Galeria' },
   { href: '/#sobre', label: 'Sobre' },
   { href: '/#localizacao', label: 'Local' },
 ]
