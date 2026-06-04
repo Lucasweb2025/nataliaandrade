@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { usePanelGallery } from '../hooks/useGalleryPhotos'
 import { uploadGalleryPhoto, deleteGalleryPhoto } from '../lib/gallery'
-import { GALLERY_UPLOAD_CATEGORIES } from '../lib/constants'
+import {
+  GALLERY_PRESET_CATEGORIES,
+  GALLERY_OTHER_LABEL,
+  resolveUploadCategory,
+} from '../lib/galleryCategories'
+
+const UPLOAD_OPTIONS = [...GALLERY_PRESET_CATEGORIES, GALLERY_OTHER_LABEL]
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
@@ -13,27 +19,47 @@ const fadeUp = {
 export default function PanelGaleria() {
   const { photos, loading, refresh } = usePanelGallery()
   const fileRef = useRef(null)
-  const [category, setCategory] = useState('Cabelo')
+  const [preset, setPreset] = useState('Cabelo')
+  const [customCategory, setCustomCategory] = useState('')
   const [uploading, setUploading] = useState(false)
   const [deletingId, setDeletingId] = useState(null)
   const [message, setMessage] = useState(null)
+
+  const isOther = preset === GALLERY_OTHER_LABEL
 
   const showMsg = (text, isError = false) => {
     setMessage({ text, isError })
     setTimeout(() => setMessage(null), 5000)
   }
 
-  const onPickFile = () => fileRef.current?.click()
+  const onPickFile = () => {
+    try {
+      resolveUploadCategory(preset, customCategory)
+    } catch (err) {
+      showMsg(err.message, true)
+      return
+    }
+    fileRef.current?.click()
+  }
 
   const onFileChange = async (e) => {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
 
+    let category
+    try {
+      category = resolveUploadCategory(preset, customCategory)
+    } catch (err) {
+      showMsg(err.message, true)
+      return
+    }
+
     setUploading(true)
     try {
       await uploadGalleryPhoto(file, { category })
       await refresh()
+      if (isOther) setCustomCategory('')
       showMsg('Foto publicada na galeria do site.')
     } catch (err) {
       showMsg(err?.message || 'Não foi possível enviar a foto.', true)
@@ -61,11 +87,13 @@ export default function PanelGaleria() {
       <div>
         <h2 className="font-serif text-xl text-charcoal tracking-wide">Fotos da galeria</h2>
         <p className="text-xs text-warm-gray mt-2 max-w-xl leading-relaxed">
-          Envie fotos dos trabalhos (cabelo ou unhas). Elas aparecem no site em{' '}
+          Envie fotos dos trabalhos ou do salão. Escolha o tipo ou use{' '}
+          <strong className="font-semibold text-charcoal">Outra</strong> para digitar (ex.: Antes e
+          depois). As fotos aparecem em{' '}
           <Link to="/galeria" className="text-rose-gold hover:underline">
             Galeria
           </Link>
-          . Quando houver fotos aqui, elas substituem as fotos fixas antigas do site.
+          .
         </p>
       </div>
 
@@ -94,13 +122,13 @@ export default function PanelGaleria() {
             Tipo
           </label>
           <div className="flex flex-wrap gap-2 mt-2">
-            {GALLERY_UPLOAD_CATEGORIES.map((cat) => (
+            {UPLOAD_OPTIONS.map((cat) => (
               <button
                 key={cat}
                 type="button"
-                onClick={() => setCategory(cat)}
+                onClick={() => setPreset(cat)}
                 className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
-                  category === cat ? 'btn-luxury' : 'border border-gold/20 text-warm-gray'
+                  preset === cat ? 'btn-luxury' : 'border border-gold/20 text-warm-gray'
                 }`}
               >
                 {cat}
@@ -108,6 +136,30 @@ export default function PanelGaleria() {
             ))}
           </div>
         </div>
+
+        {isOther && (
+          <div>
+            <label
+              htmlFor="gallery-custom-category"
+              className="text-[10px] font-semibold text-warm-gray uppercase tracking-[0.15em]"
+            >
+              Nome da categoria
+            </label>
+            <input
+              id="gallery-custom-category"
+              type="text"
+              maxLength={40}
+              placeholder="Ex.: Antes e depois"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              className="input-luxury mt-1"
+              autoComplete="off"
+            />
+            <p className="text-[10px] text-warm-gray-light mt-1">
+              Aparece como filtro na galeria do site.
+            </p>
+          </div>
+        )}
 
         <input
           ref={fileRef}

@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase'
 import { STATIC_GALLERY_IMAGES } from './constants'
+import { normalizeCategoryLabel, defaultAltForCategory } from './galleryCategories'
 
 export const GALLERY_BUCKET = 'galeria'
 const TABLE = 'galeria_fotos'
@@ -106,6 +107,11 @@ export async function uploadGalleryPhoto(file, { category, alt }) {
     throw new Error('Faça login no painel para enviar fotos.')
   }
 
+  const label = normalizeCategoryLabel(category)
+  if (label.length < 2 || label.length > 40) {
+    throw new Error('Categoria inválida (2 a 40 caracteres).')
+  }
+
   const { blob, contentType, extension } = await prepareGalleryImage(file)
   const storagePath = `${crypto.randomUUID()}.${extension}`
 
@@ -119,8 +125,8 @@ export async function uploadGalleryPhoto(file, { category, alt }) {
     .from(TABLE)
     .insert({
       storage_path: storagePath,
-      category,
-      alt: (alt || '').trim() || (category === 'Cabelo' ? 'Trabalho capilar' : 'Manicure'),
+      category: label,
+      alt: (alt || '').trim() || defaultAltForCategory(label),
       sort_order: Date.now(),
     })
     .select('id, storage_path, category, alt, sort_order, created_at')

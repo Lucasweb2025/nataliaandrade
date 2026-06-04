@@ -39,8 +39,7 @@ export const STATIC_GALLERY_IMAGES = [
 /** @deprecated use STATIC_GALLERY_IMAGES ou fotos da nuvem */
 export const GALLERY_IMAGES = STATIC_GALLERY_IMAGES
 
-export const GALLERY_CATEGORIES = ['Todos', 'Cabelo', 'Unhas']
-export const GALLERY_UPLOAD_CATEGORIES = ['Cabelo', 'Unhas']
+export { GALLERY_PRESET_CATEGORIES, GALLERY_OTHER_LABEL } from './galleryCategories'
 
 /** Troque pelos depoimentos reais das clientes (com autorização) */
 export const TESTIMONIALS = [

@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import ScrollReveal from './ScrollReveal'
 import GalleryLightbox from './GalleryLightbox'
-import { GALLERY_CATEGORIES } from '../lib/constants'
 import { usePublicGallery } from '../hooks/useGalleryPhotos'
+import { buildGalleryFilterCategories, matchesGalleryCategory } from '../lib/galleryCategories'
 
 export default function Gallery({ hideHeader = false }) {
   const { images, loading } = usePublicGallery()
@@ -11,10 +11,20 @@ export default function Gallery({ hideHeader = false }) {
   const [category, setCategory] = useState('Todos')
   const [lightboxIndex, setLightboxIndex] = useState(null)
 
+  const filterCategories = useMemo(
+    () => buildGalleryFilterCategories(images),
+    [images]
+  )
+
   const filtered = useMemo(() => {
-    if (category === 'Todos') return images
-    return images.filter((img) => img.category === category)
+    return images.filter((img) => matchesGalleryCategory(img, category))
   }, [images, category])
+
+  useEffect(() => {
+    if (category !== 'Todos' && !filterCategories.includes(category)) {
+      setCategory('Todos')
+    }
+  }, [filterCategories, category])
 
   const closeLightbox = () => setLightboxIndex(null)
   const goPrev = () =>
@@ -35,15 +45,15 @@ export default function Gallery({ hideHeader = false }) {
               {loading
                 ? 'Carregando fotos...'
                 : hasPhotos
-                  ? 'Resultados reais de cabelo e unhas — feitos com carinho no salão.'
+                  ? 'Resultados reais no salão — feitos com carinho.'
                   : 'Em breve, fotos dos trabalhos realizados.'}
             </p>
           </ScrollReveal>
         )}
 
-        {hasPhotos && !loading && (
+        {hasPhotos && !loading && filterCategories.length > 1 && (
           <div className="flex flex-wrap justify-center gap-2 mb-8 sm:mb-10">
-            {GALLERY_CATEGORIES.map((cat) => (
+            {filterCategories.map((cat) => (
               <button
                 key={cat}
                 type="button"

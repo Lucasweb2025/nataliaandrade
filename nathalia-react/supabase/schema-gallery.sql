@@ -6,7 +6,7 @@
 create table if not exists galeria_fotos (
   id uuid primary key default gen_random_uuid(),
   storage_path text not null unique,
-  category text not null check (category in ('Cabelo', 'Unhas')),
+  category text not null check (char_length(trim(category)) between 2 and 40),
   alt text not null default 'Trabalho',
   sort_order bigint not null default 0,
   created_at timestamptz default now()
