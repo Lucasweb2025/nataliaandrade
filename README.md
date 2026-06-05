@@ -2,7 +2,7 @@
 
 Repositório do site publicado no **GitHub Pages**.
 
-- **Site:** https://lucasweb2025.github.io/nataliaandrade/
+- **Site:** https://salaonathaliaandrade.com.br/
 - **Código-fonte (React):** pasta [`nathalia-react/`](nathalia-react/)
 
 ## Deploy

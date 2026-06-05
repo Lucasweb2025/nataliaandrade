@@ -2,7 +2,8 @@
 
 Site e sistema de agendamento online para o salão em Parque Arariba, SP.
 
-**Site publicado:** https://lucasweb2025.github.io/nataliaandrade/
+**Site publicado:** https://salaonathaliaandrade.com.br/  
+(Mirror GitHub Pages: https://lucasweb2025.github.io/nataliaandrade/)
 
 ---
 
@@ -62,7 +63,7 @@ cp .env.example .env.local   # preencher chaves Supabase
 npm run dev
 ```
 
-Abre em `http://localhost:5173/nataliaandrade/`
+Abre em `http://localhost:5173/`
 
 ### Variáveis de ambiente (`.env.local`)
 
@@ -83,7 +84,7 @@ npm run build
 
 Copiar conteúdo de `dist/` para a raiz do repositório (`index.html`, `assets/`, `gallery/`, etc.) e fazer push na branch `main`.
 
-O `vite.config.js` usa `base: '/nataliaandrade/'`. Ao usar **domínio customizado**, alterar para `base: '/'` e reconfigurar DNS no GitHub Pages.
+Domínio: **salaonathaliaandrade.com.br** (`public/CNAME` + DNS no Registro.br + Custom domain no GitHub Pages).
 
 ---
 
@@ -111,6 +112,12 @@ public/
   gallery/     Fotos dos trabalhos
   logo.png, proprietaria.jpg, sw.js, manifest.json
 ```
+
+---
+
+## Manual da cliente
+
+Instruções de uso do site e do painel: [MANUAL-CLIENTE.md](MANUAL-CLIENTE.md)
 
 ---
 

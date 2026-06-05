@@ -2,7 +2,7 @@
   "name": "Nathalia Andrade - Salao de Beleza",
   "short_name": "Nathalia",
   "description": "Agendamento online - Salao de Beleza Nathalia Andrade",
-  "start_url": "/nataliaandrade/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#fdfcfb",
   "theme_color": "#fdfcfb",
