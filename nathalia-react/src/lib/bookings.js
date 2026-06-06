@@ -1,9 +1,13 @@
 import { supabase, isSupabaseConfigured } from './supabase'
 import { BLOCKED_SERVICE } from './constants'
 import { formatDateKeyLong } from './dates'
+import { BOOKING_STATUS } from './bookingStatus'
 
 const STORAGE_KEY = 'na-agendamentos'
 const TABLE = 'agendamentos'
+
+const SELECT_FIELDS =
+  'id, date, time, name, phone, service, created_at, status, amount_paid, payment_method'
 
 function fromRow(row) {
   return {
@@ -14,6 +18,9 @@ function fromRow(row) {
     phone: row.phone,
     service: row.service,
     createdAt: row.created_at || row.createdAt,
+    status: row.status || BOOKING_STATUS.SCHEDULED,
+    amount_paid: row.amount_paid != null ? Number(row.amount_paid) : null,
+    payment_method: row.payment_method || null,
     blocked: row.service === BLOCKED_SERVICE,
   }
 }
@@ -22,7 +29,10 @@ function loadLocal() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const list = raw ? JSON.parse(raw) : []
-    return list.map((b) => ({ ...b, blocked: b.service === BLOCKED_SERVICE }))
+    return list.map((b) => ({
+      ...fromRow({ ...b, created_at: b.createdAt }),
+      blocked: b.service === BLOCKED_SERVICE,
+    }))
   } catch {
     return []
   }
@@ -41,7 +51,7 @@ export async function fetchBookings() {
 
   const { data, error } = await supabase
     .from(TABLE)
-    .select('id, date, time, name, phone, service, created_at')
+    .select(SELECT_FIELDS)
     .order('date', { ascending: true })
     .order('time', { ascending: true })
 
@@ -54,12 +64,23 @@ export async function fetchBookings() {
 }
 
 export async function createBooking(booking) {
+  const payload = {
+    date: booking.date,
+    time: booking.time,
+    name: booking.name,
+    phone: booking.phone,
+    service: booking.service,
+    status: BOOKING_STATUS.SCHEDULED,
+  }
+
   if (!isSupabaseConfigured) {
     const list = loadLocal()
     const entry = {
-      ...booking,
+      ...payload,
       id: booking.id || crypto.randomUUID(),
       blocked: booking.service === BLOCKED_SERVICE,
+      amount_paid: null,
+      payment_method: null,
     }
     saveLocal([...list, entry])
     return entry
@@ -67,14 +88,8 @@ export async function createBooking(booking) {
 
   const { data, error } = await supabase
     .from(TABLE)
-    .insert({
-      date: booking.date,
-      time: booking.time,
-      name: booking.name,
-      phone: booking.phone,
-      service: booking.service,
-    })
-    .select('id, date, time, name, phone, service, created_at')
+    .insert(payload)
+    .select(SELECT_FIELDS)
     .single()
 
   if (error) throw error
@@ -89,6 +104,64 @@ export async function createBlockedSlot({ date, time, note = 'Indisponível' }) 
     phone: '-',
     service: BLOCKED_SERVICE,
   })
+}
+
+export async function completeBooking(id, { amount_paid, payment_method }) {
+  const patch = {
+    status: BOOKING_STATUS.COMPLETED,
+    amount_paid,
+    payment_method,
+  }
+
+  if (!isSupabaseConfigured) {
+    const list = loadLocal().map((b) => (b.id === id ? { ...b, ...patch } : b))
+    saveLocal(list)
+    return list.find((b) => b.id === id)
+  }
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .update(patch)
+    .eq('id', id)
+    .select(SELECT_FIELDS)
+    .single()
+
+  if (error) throw error
+  return fromRow(data)
+}
+
+export async function markBookingNoShow(id) {
+  const patch = {
+    status: BOOKING_STATUS.NO_SHOW,
+    amount_paid: null,
+    payment_method: null,
+  }
+
+  if (!isSupabaseConfigured) {
+    const list = loadLocal().map((b) => (b.id === id ? { ...b, ...patch } : b))
+    saveLocal(list)
+    return
+  }
+
+  const { error } = await supabase.from(TABLE).update(patch).eq('id', id)
+  if (error) throw error
+}
+
+export async function resetBookingStatus(id) {
+  const patch = {
+    status: BOOKING_STATUS.SCHEDULED,
+    amount_paid: null,
+    payment_method: null,
+  }
+
+  if (!isSupabaseConfigured) {
+    const list = loadLocal().map((b) => (b.id === id ? { ...b, ...patch } : b))
+    saveLocal(list)
+    return
+  }
+
+  const { error } = await supabase.from(TABLE).update(patch).eq('id', id)
+  if (error) throw error
 }
 
 export function confirmationWhatsAppLink(booking) {

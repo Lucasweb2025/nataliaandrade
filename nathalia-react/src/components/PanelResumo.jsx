@@ -1,7 +1,14 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { isBlockedBooking } from '../lib/bookings'
-import { formatBRL, estimateRevenue, serviceCounts } from '../lib/pricing'
+import {
+  formatBRL,
+  actualRevenue,
+  estimateRevenue,
+  completedBookings,
+  paymentMethodTotals,
+  serviceCounts,
+} from '../lib/pricing'
 import { bookingsExportText } from '../lib/panelFilters'
 import { formatDateKeyLabel } from '../lib/dates'
 
@@ -17,9 +24,15 @@ export default function PanelResumo({ todayList, weekList, monthList }) {
   const weekClients = useMemo(() => weekList.filter((b) => !isBlockedBooking(b)), [weekList])
   const monthClients = useMemo(() => monthList.filter((b) => !isBlockedBooking(b)), [monthList])
 
-  const revenueToday = estimateRevenue(todayClients)
-  const revenueWeek = estimateRevenue(weekClients)
-  const revenueMonth = estimateRevenue(monthClients)
+  const revenueToday = actualRevenue(todayClients)
+  const revenueWeek = actualRevenue(weekClients)
+  const revenueMonth = actualRevenue(monthClients)
+
+  const pendingToday = estimateRevenue(todayClients)
+  const pendingWeek = estimateRevenue(weekClients)
+
+  const completedMonth = useMemo(() => completedBookings(monthClients), [monthClients])
+  const paymentBreakdown = useMemo(() => paymentMethodTotals(monthClients), [monthClients])
 
   const chartData = useMemo(() => serviceCounts(monthClients, 5), [monthClients])
   const maxCount = chartData[0]?.[1] || 1
@@ -39,7 +52,10 @@ export default function PanelResumo({ todayList, weekList, monthList }) {
     <div className="space-y-6">
       <div>
         <h2 className="font-serif text-xl text-charcoal tracking-wide mb-1">Resumo</h2>
-        <p className="text-xs text-warm-gray">Valores estimados com base na tabela de preços do site.</p>
+        <p className="text-xs text-warm-gray">
+          Faturamento dos atendimentos marcados como <strong className="font-semibold text-charcoal">Realizado</strong>{' '}
+          no painel.
+        </p>
       </div>
 
       <motion.div
@@ -51,19 +67,49 @@ export default function PanelResumo({ todayList, weekList, monthList }) {
         <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">
           <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">Hoje</p>
           <p className="text-2xl font-light text-charcoal">{formatBRL(revenueToday)}</p>
-          <p className="text-[10px] text-warm-gray mt-2">{todayClients.length} atendimento(s)</p>
+          <p className="text-[10px] text-warm-gray mt-2">
+            {completedBookings(todayClients).length} realizado(s)
+            {pendingToday > 0 && (
+              <span className="block text-amber-700/90 mt-0.5">
+                +{formatBRL(pendingToday)} pendente(s)
+              </span>
+            )}
+          </p>
         </motion.div>
         <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">
           <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">7 dias</p>
           <p className="text-2xl font-light text-charcoal">{formatBRL(revenueWeek)}</p>
-          <p className="text-[10px] text-warm-gray mt-2">{weekClients.length} atendimento(s)</p>
+          <p className="text-[10px] text-warm-gray mt-2">
+            {completedBookings(weekClients).length} realizado(s)
+            {pendingWeek > 0 && (
+              <span className="block text-amber-700/90 mt-0.5">
+                +{formatBRL(pendingWeek)} pendente(s)
+              </span>
+            )}
+          </p>
         </motion.div>
         <motion.div variants={fadeUp} className="card-luxury rounded-2xl p-6">
           <p className="text-[9px] font-semibold text-warm-gray uppercase tracking-wider mb-2">30 dias</p>
           <p className="text-2xl font-light text-charcoal">{formatBRL(revenueMonth)}</p>
-          <p className="text-[10px] text-warm-gray mt-2">{monthClients.length} atendimento(s)</p>
+          <p className="text-[10px] text-warm-gray mt-2">{completedMonth.length} realizado(s)</p>
         </motion.div>
       </motion.div>
+
+      {paymentBreakdown.length > 0 && (
+        <div className="card-luxury rounded-2xl p-6">
+          <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.2em] mb-4">
+            Pagamentos — últimos 30 dias
+          </p>
+          <ul className="space-y-3">
+            {paymentBreakdown.map(({ id, label, total }) => (
+              <li key={id} className="flex justify-between text-sm gap-3">
+                <span className="text-charcoal font-medium">{label}</span>
+                <span className="text-warm-gray shrink-0">{formatBRL(total)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="card-luxury rounded-2xl p-6">
         <p className="text-[10px] font-semibold text-rose-gold uppercase tracking-[0.2em] mb-4">

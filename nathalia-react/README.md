@@ -21,9 +21,10 @@ Site e sistema de agendamento online para o salão em Parque Arariba, SP.
 - **Fotos** — enviar e remover imagens da galeria do site (Supabase Storage)
 - Agenda de hoje e próximos 7 dias
 - Histórico (30 dias)
-- Resumo financeiro estimado + gráfico de serviços
+- Status por agendamento: agendado → realizado (valor + pagamento) ou não compareceu
+- Resumo financeiro com valores confirmados + breakdown por forma de pagamento
 - Agendar manualmente e bloquear horários
-- Confirmar cliente via WhatsApp
+- Avisar cliente via WhatsApp
 - Busca e filtro por serviço
 - Exportar lista da semana
 
@@ -94,9 +95,10 @@ Domínio: **salaonathaliaandrade.com.br** (`public/CNAME` + DNS no Registro.br +
 2. Executar `supabase/schema-auth.sql` — políticas de update/delete para usuários autenticados (painel)
 3. Executar `supabase/schema-gallery.sql` — tabela `galeria_fotos` + bucket Storage `galeria`
 4. Executar `supabase/schema-gallery-categories.sql` — permite categorias custom (Outra) e presets Sobrancelha/Salão
-5. **Database → Replication** — ativar Realtime na tabela `galeria_fotos` (opcional; o site atualiza ao recarregar)
-6. **Authentication → Users** — criar usuário da profissional
-7. Habilitar provider **Email**
+5. Executar `supabase/schema-booking-status.sql` — status do atendimento + valor pago + forma de pagamento
+6. **Database → Replication** — ativar Realtime na tabela `galeria_fotos` (opcional; o site atualiza ao recarregar)
+7. **Authentication → Users** — criar usuário da profissional
+8. Habilitar provider **Email**
 
 ---
 

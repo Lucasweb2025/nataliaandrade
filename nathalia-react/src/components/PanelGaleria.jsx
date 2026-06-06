@@ -32,14 +32,26 @@ export default function PanelGaleria() {
     setTimeout(() => setMessage(null), 5000)
   }
 
-  const onPickFile = () => {
+  const validateCategory = () => {
     try {
       resolveUploadCategory(preset, customCategory)
+      return true
     } catch (err) {
       showMsg(err.message, true)
-      return
+      return false
     }
-    fileRef.current?.click()
+  }
+
+  const onPickFile = (useCamera) => {
+    if (!validateCategory()) return
+    const input = fileRef.current
+    if (!input) return
+    if (useCamera) {
+      input.setAttribute('capture', 'environment')
+    } else {
+      input.removeAttribute('capture')
+    }
+    input.click()
   }
 
   const onFileChange = async (e) => {
@@ -165,19 +177,28 @@ export default function PanelGaleria() {
           ref={fileRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
-          capture="environment"
           className="hidden"
           onChange={onFileChange}
         />
 
-        <button
-          type="button"
-          disabled={uploading}
-          onClick={onPickFile}
-          className="w-full py-4 rounded-2xl border-2 border-dashed border-gold/30 text-sm font-semibold text-charcoal hover:border-rose-gold/50 hover:bg-rose-gold-light/30 transition-colors disabled:opacity-50"
-        >
-          {uploading ? 'Enviando...' : 'Escolher foto do celular ou computador'}
-        </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => onPickFile(true)}
+            className="w-full py-4 rounded-2xl border-2 border-dashed border-gold/30 text-sm font-semibold text-charcoal hover:border-rose-gold/50 hover:bg-rose-gold-light/30 transition-colors disabled:opacity-50"
+          >
+            {uploading ? 'Enviando...' : 'Tirar foto'}
+          </button>
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => onPickFile(false)}
+            className="w-full py-4 rounded-2xl border-2 border-dashed border-gold/30 text-sm font-semibold text-charcoal hover:border-rose-gold/50 hover:bg-rose-gold-light/30 transition-colors disabled:opacity-50"
+          >
+            {uploading ? 'Enviando...' : 'Escolher da galeria'}
+          </button>
+        </div>
         <p className="text-[10px] text-warm-gray-light text-center">
           JPG, PNG ou WebP — a imagem é ajustada automaticamente antes de subir.
         </p>

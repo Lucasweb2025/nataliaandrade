@@ -7,11 +7,15 @@ import PanelBookingCard from '../components/PanelBookingCard'
 import PanelResumo from '../components/PanelResumo'
 import PanelListToolbar from '../components/PanelListToolbar'
 import PanelGaleria from '../components/PanelGaleria'
+import PanelCompleteModal from '../components/PanelCompleteModal'
 import { LOGO_URL, HOURS_LABEL } from '../lib/constants'
 import {
   fetchBookings,
   subscribeBookings,
   deleteBooking,
+  completeBooking,
+  markBookingNoShow,
+  resetBookingStatus,
   isBlockedBooking,
 } from '../lib/bookings'
 import { filterBookings } from '../lib/panelFilters'
@@ -39,7 +43,17 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
 }
 
-function BookingList({ items, onCancel, cancellingId, showDate, emptyMessage }) {
+function BookingList({
+  items,
+  onCancel,
+  onComplete,
+  onNoShow,
+  onEditComplete,
+  onResetStatus,
+  cancellingId,
+  showDate,
+  emptyMessage,
+}) {
   if (items.length === 0) {
     return (
       <div className="card-luxury rounded-2xl p-8 text-center text-sm text-warm-gray">
@@ -54,6 +68,10 @@ function BookingList({ items, onCancel, cancellingId, showDate, emptyMessage }) 
           key={b.id}
           booking={b}
           onCancel={onCancel}
+          onComplete={onComplete}
+          onNoShow={onNoShow}
+          onEditComplete={onEditComplete}
+          onResetStatus={onResetStatus}
           cancelling={cancellingId === b.id}
           showDate={showDate}
         />
@@ -72,6 +90,8 @@ export default function Painel() {
   const [savedFlash, setSavedFlash] = useState(false)
   const [search, setSearch] = useState('')
   const [serviceFilter, setServiceFilter] = useState('')
+  const [completeTarget, setCompleteTarget] = useState(null)
+  const [completing, setCompleting] = useState(false)
 
   const refresh = useCallback(() => fetchBookings().then(setBookings).catch(() => setBookings([])), [])
 
@@ -190,6 +210,51 @@ export default function Painel() {
     } finally {
       setCancellingId(null)
     }
+  }
+
+  const handleComplete = (booking) => setCompleteTarget(booking)
+
+  const handleNoShow = async (booking) => {
+    if (!confirm(`Marcar ${booking.name} como não compareceu?`)) return
+    try {
+      await markBookingNoShow(booking.id)
+      await refresh()
+    } catch {
+      alert('Não foi possível atualizar. Rode o SQL schema-booking-status.sql no Supabase.')
+    }
+  }
+
+  const handleResetStatus = async (booking) => {
+    if (!confirm(`Voltar ${booking.name} para agendado?`)) return
+    try {
+      await resetBookingStatus(booking.id)
+      await refresh()
+    } catch {
+      alert('Não foi possível atualizar.')
+    }
+  }
+
+  const handleSaveComplete = async ({ amount_paid, payment_method }) => {
+    if (!completeTarget) return
+    setCompleting(true)
+    try {
+      await completeBooking(completeTarget.id, { amount_paid, payment_method })
+      await refresh()
+      setCompleteTarget(null)
+    } catch {
+      alert('Não foi possível salvar. Rode o SQL schema-booking-status.sql no Supabase.')
+    } finally {
+      setCompleting(false)
+    }
+  }
+
+  const bookingListProps = {
+    onCancel: handleCancel,
+    onComplete: handleComplete,
+    onNoShow: handleNoShow,
+    onEditComplete: handleComplete,
+    onResetStatus: handleResetStatus,
+    cancellingId,
   }
 
   const handleRefresh = async () => {
@@ -400,8 +465,7 @@ export default function Painel() {
                 <h2 className="font-serif text-xl text-charcoal tracking-wide">Agenda de hoje</h2>
                 <BookingList
                   items={todayFiltered}
-                  onCancel={handleCancel}
-                  cancellingId={cancellingId}
+                  {...bookingListProps}
                   showDate={false}
                   emptyMessage={
                     search || serviceFilter
@@ -419,8 +483,7 @@ export default function Painel() {
               {weekFiltered.length === 0 ? (
                 <BookingList
                   items={[]}
-                  onCancel={handleCancel}
-                  cancellingId={cancellingId}
+                  {...bookingListProps}
                   showDate
                   emptyMessage={
                     search || serviceFilter
@@ -441,8 +504,7 @@ export default function Painel() {
                         </p>
                         <BookingList
                           items={filtered}
-                          onCancel={handleCancel}
-                          cancellingId={cancellingId}
+                          {...bookingListProps}
                           showDate={false}
                           emptyMessage=""
                         />
@@ -462,8 +524,7 @@ export default function Painel() {
               </div>
               <BookingList
                 items={historicoFiltered}
-                onCancel={handleCancel}
-                cancellingId={cancellingId}
+                {...bookingListProps}
                 showDate
                 emptyMessage={
                   search || serviceFilter
@@ -497,6 +558,13 @@ export default function Painel() {
           )}
         </main>
       </div>
+
+      <PanelCompleteModal
+        booking={completeTarget}
+        onClose={() => !completing && setCompleteTarget(null)}
+        onSave={handleSaveComplete}
+        saving={completing}
+      />
     </div>
   )
 }

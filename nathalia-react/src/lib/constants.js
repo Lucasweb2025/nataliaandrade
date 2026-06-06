@@ -2,10 +2,10 @@ export const LOGO_URL = `${import.meta.env.BASE_URL}logo.png`
 export const OWNER_PHOTO_URL = `${import.meta.env.BASE_URL}proprietaria.jpg`
 export const PHONE_DISPLAY = '(11) 98427-0908'
 export const PHONE_WA = '5511984270908'
-export const ADDRESS = 'Rua Julio Frank, 111 A — Parque Arariba, SP'
-export const MAPS_URL = 'https://www.google.com/maps/search/Rua+Julio+Frank+111+A+Parque+Arariba+SP'
+export const ADDRESS = 'Travessa Grande Amor, 81 — Parque Arariba, SP'
+export const MAPS_URL = 'https://www.google.com/maps/search/Travessa+Grande+Amor+81+Parque+Arariba+SP'
 export const MAPS_EMBED_URL =
-  'https://maps.google.com/maps?q=Rua+Julio+Frank+111+A+Parque+Arariba+SP&hl=pt-BR&z=16&output=embed'
+  'https://maps.google.com/maps?q=Travessa+Grande+Amor+81+Parque+Arariba+SP&hl=pt-BR&z=16&output=embed'
 export const HOURS_LABEL = 'Terça a Sábado, 9h às 19h'
 
 export const INSTAGRAM_HANDLE = 'nathaliaestrela1235'

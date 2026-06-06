@@ -32,7 +32,8 @@ Guarde este arquivo no celular ou imprima uma cópia.
 - Ver quem agendou **hoje**, na **semana** e no **histórico**  
 - **Agendar manualmente** (telefone, WhatsApp, presencial)  
 - **Bloquear horário** (almoço, folga, compromisso)  
-- **Confirmar** cliente pelo WhatsApp com mensagem pronta  
+- Marcar atendimento como **Realizado** (valor + forma de pagamento) ou **Não veio**  
+- **Avisar** cliente pelo WhatsApp com mensagem pronta  
 - **Enviar fotos** para a galeria do site  
 - Copiar o **link da agenda** para mandar nas redes  
 
@@ -54,7 +55,7 @@ Guarde este arquivo no celular ou imprima uma cópia.
 
 ### Hoje
 - Lista dos agendamentos **de hoje**, por horário.  
-- Em cada card: **Confirmar** (WhatsApp para a cliente), **WhatsApp** (abrir conversa) e **Cancelar** (remove o horário).
+- Em cada card: **Realizado** (confirma valor e pagamento), **Não veio**, **Avisar** (WhatsApp com mensagem pronta), **WhatsApp** (abrir conversa) e **Cancelar** (remove o horário).
 
 ### Semana
 - Próximos **7 dias**, agrupados por dia.
@@ -63,7 +64,9 @@ Guarde este arquivo no celular ou imprima uma cópia.
 - Agendamentos dos **últimos 30 dias** (já passados).
 
 ### Resumo
-- Visão rápida: quantos atendimentos, serviço mais pedido, estimativa da semana (valores são **estimados**, conforme os preços “a partir de” do site).
+- Faturamento dos atendimentos marcados como **Realizado** (valor que você confirmou no painel).  
+- Mostra também quanto ainda está **pendente** (agendados que ainda não foram marcados).  
+- Detalhe por forma de pagamento (Pix, Crédito, Débito, Dinheiro) nos últimos 30 dias.
 
 ### Agendar
 - Você marca horário para uma cliente (nome, telefone, serviço, data e hora).  
@@ -76,7 +79,7 @@ Guarde este arquivo no celular ou imprima uma cópia.
 ### Fotos
 - Envie fotos dos trabalhos para aparecerem na **Galeria** do site.  
 - Escolha o tipo: **Cabelo**, **Unhas**, **Sobrancelha**, **Salão** ou **Outra** (digite o nome, ex.: “Antes e depois”).  
-- Toque em **Escolher foto** (câmera ou galeria do celular).  
+- Toque em **Câmera ou galeria** (o celular pergunta se quer tirar foto ou escolher da galeria).  
 - Para **apagar**, use **Remover** na foto.  
 - No site aparecem **12 fotos por página**; se tiver mais, a cliente vê **Página 2**, **Página 3**, etc.
 
@@ -155,4 +158,4 @@ Dúvida técnica: chamar Lucas no Instagram @lucasdmxx
 
 ---
 
-*Manual versão 1 — salão Nathalia Andrade, Parque Arariba, SP.*
+*Manual versão 2 — salão Nathalia Andrade, Travessa Grande Amor, 81 — Parque Arariba, SP.*
