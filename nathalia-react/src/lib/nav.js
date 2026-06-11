@@ -3,4 +3,5 @@ export const NAV_LINKS = [
   { to: '/galeria', label: 'Galeria' },
   { to: '/sobre', label: 'Sobre' },
   { to: '/local', label: 'Local' },
+  { to: '/login', label: 'Área profissional' },
 ]

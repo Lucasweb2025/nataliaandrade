@@ -1,4 +1,4 @@
-const CACHE_NAME = 'na-salon-v13'
+const CACHE_NAME = 'na-salon-v14'
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()
