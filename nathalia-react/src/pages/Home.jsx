@@ -6,6 +6,7 @@ import ScrollReveal from '../components/ScrollReveal'
 import Testimonials from '../components/Testimonials'
 import { LOGO_URL, waLink } from '../lib/constants'
 import { NAV_LINKS } from '../lib/nav'
+import { usePostHog } from '@posthog/react'
 
 const WA_URL = waLink('Olá! Gostaria de saber mais sobre os serviços.')
 
@@ -23,6 +24,7 @@ const TEASERS = {
 }
 
 export default function Home() {
+  const posthog = usePostHog()
   return (
     <div className="min-h-screen pb-20 sm:pb-0">
       <Navbar />
@@ -82,6 +84,7 @@ export default function Home() {
               href={WA_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => posthog?.capture('whatsapp_clicked', { source: 'hero' })}
               className="btn-outline-gold px-9 py-4 rounded-full text-xs font-bold uppercase tracking-[0.2em] text-center"
             >
               Falar no WhatsApp
@@ -165,6 +168,7 @@ export default function Home() {
                 href={waLink('Olá! Gostaria de agendar um horário.')}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => posthog?.capture('whatsapp_clicked', { source: 'cta_bottom' })}
                 className="border border-white/20 hover:border-gold/50 text-white px-9 py-4 rounded-full text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300"
               >
                 Chamar no WhatsApp

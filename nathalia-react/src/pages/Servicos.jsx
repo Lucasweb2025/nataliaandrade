@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import PageShell from '../components/PageShell'
 import ScrollReveal from '../components/ScrollReveal'
 import { SERVICES, waLink } from '../lib/constants'
+import { usePostHog } from '@posthog/react'
 
 const staggerContainer = {
   hidden: {},
@@ -15,6 +16,7 @@ const staggerItem = {
 }
 
 export default function Servicos() {
+  const posthog = usePostHog()
   return (
     <PageShell
       eyebrow="Nossos serviços"
@@ -56,6 +58,7 @@ export default function Servicos() {
                   <p className="text-sm text-warm-gray leading-relaxed flex-1">{svc.desc}</p>
                   <Link
                     to={`/agenda?s=${encodeURIComponent(svc.title)}`}
+                    onClick={() => posthog?.capture('service_schedule_clicked', { service: svc.title })}
                     className="inline-block mt-5 text-[10px] font-bold text-rose-gold uppercase tracking-[0.18em] border-b border-rose-gold/40 hover:border-rose-gold pb-0.5 transition-colors duration-300 self-start"
                   >
                     Agendar

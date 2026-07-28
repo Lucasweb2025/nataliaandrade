@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatBRL, suggestedServicePrice } from '../lib/pricing'
 import { PAYMENT_METHODS } from '../lib/bookingStatus'
+import { usePostHog } from '@posthog/react'
 
 function parseAmountInput(raw) {
   const s = String(raw || '').trim().replace(/[^\d,.-]/g, '').replace(',', '.')
@@ -16,6 +17,7 @@ function formatAmountInput(value) {
 }
 
 export default function PanelCompleteModal({ booking, onClose, onSave, saving }) {
+  const posthog = usePostHog()
   const suggested = booking ? suggestedServicePrice(booking.service) : 0
   const [amountInput, setAmountInput] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('pix')
@@ -45,6 +47,13 @@ export default function PanelCompleteModal({ booking, onClose, onSave, saving })
       alert('Escolha a forma de pagamento.')
       return
     }
+    posthog?.capture('admin_booking_completed', {
+      service: booking.service,
+      date: booking.date,
+      time: booking.time,
+      amount_paid: amount,
+      payment_method: paymentMethod,
+    })
     onSave({ amount_paid: amount, payment_method: paymentMethod })
   }
 

@@ -4,8 +4,10 @@ import { createBooking, createBlockedSlot } from '../lib/bookings'
 import { formatDateKeyLabel, nextDaysKeys, parseDateKey } from '../lib/dates'
 import { isWorkingDay, nextWorkingDateKey, slotStatesForDate } from '../lib/schedule'
 import { formatPhone } from '../lib/utils'
+import { usePostHog } from '@posthog/react'
 
 export default function PanelScheduleForm({ mode, bookings, onSuccess }) {
+  const posthog = usePostHog()
   const isBlock = mode === 'block'
   const [date, setDate] = useState(() => nextWorkingDateKey())
   const [time, setTime] = useState(null)
@@ -39,14 +41,17 @@ export default function PanelScheduleForm({ mode, bookings, onSuccess }) {
     try {
       if (isBlock) {
         await createBlockedSlot({ date, time, note: note || 'Indisponível' })
+        posthog?.capture('admin_slot_blocked', { date, time })
       } else {
+        const bookingService = service || BOOKING_SERVICES[0]
         await createBooking({
           date,
           time,
           name: name.trim(),
           phone: phone.trim(),
-          service: service || BOOKING_SERVICES[0],
+          service: bookingService,
         })
+        posthog?.capture('admin_booking_created', { date, time, service: bookingService })
       }
       resetForm()
       onSuccess?.()
