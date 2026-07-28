@@ -7,6 +7,7 @@ import { clientBookingWhatsAppMessage } from '../lib/share'
 import { formatPhone } from '../lib/utils'
 import { fetchBookings, createBooking, subscribeBookings } from '../lib/bookings'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { usePostHog } from '@posthog/react'
 
 const WORK_DAYS = [2, 3, 4, 5, 6]
 
@@ -46,6 +47,7 @@ function formatDateLabel(dateStr) {
 }
 
 export default function Agenda() {
+  const posthog = usePostHog()
   const [bookings, setBookings] = useState([])
   const [loadingBookings, setLoadingBookings] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -107,11 +109,13 @@ export default function Agenda() {
   const selectDate = (key) => {
     setSelectedDate(key)
     setSelectedTime(null)
+    posthog?.capture('booking_date_selected', { date: key })
   }
 
   const openModal = (time) => {
     setSelectedTime(time)
     setShowModal(true)
+    posthog?.capture('booking_time_selected', { date: selectedDate, time })
   }
 
   const closeModal = () => {
@@ -129,13 +133,14 @@ export default function Agenda() {
     }
     const fd = new FormData(e.target)
     setSubmitting(true)
+    const bookingService = service || String(fd.get('service') || '')
     try {
       const booking = await createBooking({
         date: selectedDate,
         time: selectedTime,
         name: String(fd.get('name') || '').trim(),
         phone: phone.trim() || String(fd.get('phone') || '').trim(),
-        service: service || fd.get('service'),
+        service: bookingService,
       })
       const fresh = await fetchBookings()
       setBookings(fresh)
@@ -145,11 +150,13 @@ export default function Agenda() {
       closeModal()
       setShowToast(true)
       setTimeout(() => setShowToast(false), 8000)
+      posthog?.capture('booking_completed', { date: selectedDate, time: selectedTime, service: bookingService })
     } catch (err) {
       const msg = err?.code === '23505'
         ? 'Este horário acabou de ser reservado. Escolha outro.'
         : 'Não foi possível confirmar. Verifique a conexão e tente de novo.'
       alert(msg)
+      posthog?.capture('booking_failed', { date: selectedDate, time: selectedTime, service: bookingService, error_code: err?.code || 'unknown' })
       if (err?.code === '23505') closeModal()
     } finally {
       setSubmitting(false)

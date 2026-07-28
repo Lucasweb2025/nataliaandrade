@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
+import { usePostHog } from '@posthog/react'
 import PanelScheduleForm from '../components/PanelScheduleForm'
 import PanelBookingCard from '../components/PanelBookingCard'
 import PanelResumo from '../components/PanelResumo'
@@ -81,6 +82,7 @@ function BookingList({
 }
 
 export default function Painel() {
+  const posthog = usePostHog()
   const { user, signOut } = useAuth()
   const [bookings, setBookings] = useState([])
   const [view, setView] = useState('hoje')
@@ -205,6 +207,12 @@ export default function Painel() {
     try {
       await deleteBooking(booking.id)
       await refresh()
+      posthog?.capture('admin_booking_cancelled', {
+        date: booking.date,
+        time: booking.time,
+        service: booking.service,
+        is_blocked: isBlockedBooking(booking),
+      })
     } catch {
       alert('Não foi possível remover. Confira se rodou o SQL de autenticação no Supabase.')
     } finally {
@@ -219,6 +227,7 @@ export default function Painel() {
     try {
       await markBookingNoShow(booking.id)
       await refresh()
+      posthog?.capture('admin_booking_no_show', { date: booking.date, time: booking.time, service: booking.service })
     } catch {
       alert('Não foi possível atualizar. Rode o SQL schema-booking-status.sql no Supabase.')
     }
@@ -279,6 +288,7 @@ export default function Painel() {
       await navigator.clipboard.writeText(AGENDA_PUBLIC_URL)
       setCopyOk(true)
       setTimeout(() => setCopyOk(false), 2500)
+      posthog?.capture('admin_link_copied')
     } catch {
       prompt('Copie o link:', AGENDA_PUBLIC_URL)
     }
